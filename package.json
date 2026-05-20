@@ -1,0 +1,25 @@
+{
+  "name": "yunoballhuh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://rhqi56: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@github.com/rhqi56/YunoBall.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/rhqi56/YunoBall/issues"
+  },
+  "homepage": "https://github.com/rhqi56/YunoBall#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
