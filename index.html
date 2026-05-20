@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JapanTrip2026 · Live Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #c8102e;
+  --red2: #e8192c;
+  --red3: #ff4d6d;
+  --white: #ffffff;
+  --off: #f8f0f0;
+  --panel: rgba(255,255,255,0.07);
+  --border: rgba(200,16,46,0.25);
+  --text: #1a0a0d;
+  --muted: #7a4a52;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: var(--sans); overflow: hidden; }
+
+/* ── BACKGROUND ── */
+body {
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(200,16,46,0.08) 0%, transparent 70%),
+    linear-gradient(160deg, #fff5f5 0%, #ffffff 40%, #fff0f0 100%);
+}
+
+/* ── LOGIN SCREEN ── */
+#login-screen {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #ffffff 0%, #fff5f5 50%, #ffe8ec 100%);
+}
+
+/* Japan circle bg */
+#login-screen::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,16,46,0.06) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+
+.login-card {
+  width: 380px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(200,16,46,0.2);
+  border-top: 4px solid var(--red);
+  box-shadow: 0 24px 80px rgba(200,16,46,0.12), 0 4px 16px rgba(0,0,0,0.06);
+  padding: 44px 40px 40px;
+  animation: rise .5s cubic-bezier(.16,1,.3,1) both;
+  position: relative;
+}
+
+@keyframes rise {
+  from { opacity:0; transform: translateY(20px) scale(.98); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+.login-emblem {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 32px;
+  flex-direction: column; gap: 10px;
+}
+
+.login-circle {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, var(--red3), var(--red));
+  box-shadow: 0 4px 20px rgba(200,16,46,0.4);
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,100% { box-shadow: 0 4px 20px rgba(200,16,46,0.4); }
+  50% { box-shadow: 0 4px 32px rgba(200,16,46,0.7); }
+}
+
+.login-brand {
+  font-size: 22px; font-weight: 800; letter-spacing: 4px;
+  color: var(--text); text-transform: uppercase;
+}
+
+.login-brand span { color: var(--red); }
+
+.login-sub {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: 2px; text-transform: uppercase; text-align: center;
+}
+
+.field { margin-bottom: 16px; }
+.field label {
+  display: block; font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 8px;
+}
+.field input {
+  width: 100%; padding: 12px 14px;
+  border: 1px solid rgba(200,16,46,0.2);
+  background: rgba(255,245,245,0.5);
+  color: var(--text); font-family: var(--mono); font-size: 13px;
+  outline: none; transition: all .2s; border-radius: 2px;
+}
+.field input:focus {
+  border-color: var(--red);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(200,16,46,0.08);
+}
+
+.login-btn {
+  width: 100%; padding: 14px; margin-top: 8px;
+  background: linear-gradient(135deg, var(--red2), var(--red));
+  color: white; font-family: var(--sans); font-size: 13px;
+  font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  border: none; cursor: pointer; border-radius: 2px;
+  transition: all .2s; box-shadow: 0 4px 16px rgba(200,16,46,0.3);
+}
+.login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,16,46,0.4); }
+.login-btn:active { transform: translateY(0); }
+.login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+.login-error {
+  display: none; margin-top: 14px; padding: 10px 14px;
+  background: rgba(200,16,46,0.07); border-left: 3px solid var(--red);
+  font-size: 12px; color: var(--red); font-family: var(--mono);
+  border-radius: 0 2px 2px 0;
+}
+
+.attempt-dots {
+  display: flex; gap: 6px; justify-content: center; margin-top: 16px;
+}
+.attempt-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  border: 1.5px solid rgba(200,16,46,0.3);
+  transition: all .3s;
+}
+.attempt-dot.used { background: var(--red); border-color: var(--red); }
+
+/* ── APP ── */
+#app {
+  display: none; height: 100vh;
+  flex-direction: column;
+  background: linear-gradient(160deg, #fff5f5 0%, #ffffff 50%, #fff0f0 100%);
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 52px; display: flex; align-items: center;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,16,46,0.15);
+  padding: 0 20px; gap: 0; flex-shrink: 0;
+  box-shadow: 0 1px 12px rgba(200,16,46,0.06);
+  position: relative; z-index: 10;
+}
+
+.topbar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding-right: 20px; border-right: 1px solid rgba(200,16,46,0.15);
+}
+.topbar-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: radial-gradient(circle, var(--red3), var(--red));
+  box-shadow: 0 0 8px rgba(200,16,46,0.6);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+.topbar-name {
+  font-size: 16px; font-weight: 800; letter-spacing: 3px;
+  color: var(--text);
+}
+.topbar-name span { color: var(--red); }
+
+.topbar-live {
+  margin-left: 16px; display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--red); letter-spacing: 1px;
+}
+.topbar-live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--red); animation: pulse 1s infinite;
+}
+
+.topbar-right {
+  margin-left: auto; display: flex; align-items: center; gap: 12px;
+}
+
+.alert-bell {
+  position: relative; cursor: pointer;
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: background .2s;
+}
+.alert-bell:hover { background: rgba(200,16,46,0.08); }
+.alert-bell svg { color: var(--muted); transition: color .2s; }
+.alert-bell:hover svg { color: var(--red); }
+.alert-badge {
+  display: none; position: absolute; top: 4px; right: 4px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--red); color: white;
+  font-size: 8px; font-weight: 800; font-family: var(--mono);
+  align-items: center; justify-content: center;
+  box-shadow: 0 0 6px rgba(200,16,46,0.5);
+}
+.alert-badge.show { display: flex; animation: popIn .3s cubic-bezier(.16,1,.3,1); }
+@keyframes popIn { from{transform:scale(0)}to{transform:scale(1)} }
+
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px 6px 8px;
+  background: rgba(200,16,46,0.06);
+  border: 1px solid rgba(200,16,46,0.15);
+  border-radius: 20px;
+}
+.user-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--red3), var(--red));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: white;
+}
+.user-chip span { font-size: 12px; font-weight: 700; color: var(--text); }
+
+.logout-btn {
+  padding: 7px 14px;
+  background: none; border: 1px solid rgba(200,16,46,0.2);
+  color: var(--muted); font-family: var(--sans); font-size: 11px;
+  font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  cursor: pointer; border-radius: 2px; transition: all .2s;
+}
+.logout-btn:hover { border-color: var(--red); color: var(--red); background: rgba(200,16,46,0.05); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px; gap: 20px; overflow: hidden;
+}
+
+/* Japan circle decoration */
+.main::before {
+  content: '';
+  position: fixed; width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,16,46,0.04) 0%, transparent 65%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── CAMERA CONTAINER ── */
+.cam-wrapper {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 860px;
+}
+
+.cam-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cam-title {
+  display: flex; align-items: center; gap: 10px;
+}
+.cam-title h2 {
+  font-size: 13px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text);
+}
+.cam-status-pill {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px; letter-spacing: 1px;
+}
+.cam-status-pill.live {
+  background: rgba(200,16,46,0.1); color: var(--red);
+  border: 1px solid rgba(200,16,46,0.25);
+}
+.cam-status-pill.offline {
+  background: rgba(100,100,100,0.1); color: var(--muted);
+  border: 1px solid rgba(100,100,100,0.2);
+}
+
+.cam-controls { display: flex; gap: 8px; }
+.ctrl-btn {
+  padding: 6px 14px; font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+  font-family: var(--sans); border-radius: 2px; transition: all .2s;
+}
+.ctrl-btn.primary {
+  background: linear-gradient(135deg, var(--red2), var(--red));
+  color: white; border: none;
+  box-shadow: 0 2px 12px rgba(200,16,46,0.3);
+}
+.ctrl-btn.primary:hover { box-shadow: 0 4px 20px rgba(200,16,46,0.4); transform: translateY(-1px); }
+.ctrl-btn.ghost {
+  background: none; border: 1px solid rgba(200,16,46,0.2); color: var(--muted);
+}
+.ctrl-btn.ghost:hover { border-color: var(--red); color: var(--red); }
+
+/* ── FEED BOX ── */
+.feed-box {
+  width: 100%; aspect-ratio: 16/9;
+  background: #0a0205;
+  border: 1px solid rgba(200,16,46,0.2);
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 48px rgba(200,16,46,0.1), 0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* Corner brackets */
+.feed-box::before, .feed-box::after {
+  content: '';
+  position: absolute; width: 20px; height: 20px;
+  border-color: var(--red); border-style: solid; z-index: 5;
+}
+.feed-box::before { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
+.feed-box::after  { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+
+#cam-video {
+  width: 100%; height: 100%; object-fit: cover;
+  display: none;
+}
+
+.no-cam {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 14px;
+}
+.no-cam-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 2px solid rgba(200,16,46,0.2);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(200,16,46,0.3);
+}
+.no-cam h3 {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: rgba(200,16,46,0.4); letter-spacing: 2px; text-transform: uppercase;
+}
+.no-cam p {
+  font-size: 12px; color: rgba(200,16,46,0.25);
+  font-family: var(--mono); letter-spacing: 1px;
+}
+
+/* Overlays on active feed */
+.feed-overlay {
+  position: absolute; inset: 0; pointer-events: none;
+  display: none;
+}
+.feed-overlay.visible { display: block; }
+
+.feed-tl {
+  position: absolute; top: 14px; left: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.feed-badge {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  padding: 3px 8px; letter-spacing: 1px;
+}
+.feed-badge.live { background: var(--red); color: white; }
+.feed-badge.label { background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.8); }
+
+.feed-br {
+  position: absolute; bottom: 14px; right: 14px;
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(255,255,255,0.5);
+}
+
+.feed-clock {
+  position: absolute; bottom: 14px; left: 14px;
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Scanline effect */
+.scanlines {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+  );
+  z-index: 3;
+}
+
+/* ── BOTTOM INFO BAR ── */
+.info-bar {
+  display: flex; gap: 12px; width: 100%; max-width: 860px;
+  position: relative; z-index: 1;
+}
+
+.info-card {
+  flex: 1; padding: 12px 16px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(200,16,46,0.12);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; gap: 10px;
+}
+.info-card-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(200,16,46,0.08);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--red); flex-shrink: 0;
+}
+.info-card-body { min-width: 0; }
+.info-card-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.info-card-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.info-card-val.ok { color: #16a34a; }
+.info-card-val.warn { color: var(--red); }
+
+/* ── ALERT DROPDOWN ── */
+.alert-panel {
+  display: none; position: absolute; top: 54px; right: 20px; z-index: 50;
+  width: 320px; background: white;
+  border: 1px solid rgba(200,16,46,0.15);
+  border-top: 3px solid var(--red);
+  box-shadow: 0 12px 40px rgba(200,16,46,0.12);
+  animation: dropDown .2s ease both;
+}
+.alert-panel.open { display: block; }
+@keyframes dropDown { from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)} }
+
+.alert-panel-header {
+  padding: 12px 16px; border-bottom: 1px solid rgba(200,16,46,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.alert-panel-header h4 { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text); }
+.alert-clear { font-size: 11px; color: var(--red); cursor: pointer; font-weight: 700; }
+
+.alert-entries { max-height: 240px; overflow-y: auto; }
+.alert-entry {
+  display: flex; gap: 10px; padding: 12px 16px;
+  border-bottom: 1px solid rgba(200,16,46,0.06);
+  animation: slideIn .3s ease both;
+}
+@keyframes slideIn { from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)} }
+.alert-entry-dot {
+  width: 8px; height: 8px; border-radius: 50%; margin-top: 4px;
+  flex-shrink: 0;
+}
+.alert-entry-dot.danger { background: var(--red); }
+.alert-entry-dot.warn { background: var(--warn); }
+.alert-entry-body { flex: 1; }
+.alert-entry-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.alert-entry-desc { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.alert-entry-time { font-size: 10px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
+
+.alert-empty { padding: 24px; text-align: center; font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+/* ── LOCKOUT SCREEN ── */
+#lockout-screen {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: linear-gradient(135deg, #fff5f5, #ffe8ec);
+  align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+}
+#lockout-screen.show { display: flex; }
+
+.lockout-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: radial-gradient(circle, var(--red3), var(--red));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 40px rgba(200,16,46,0.4);
+  animation: lockPulse 1.5s ease-in-out infinite;
+}
+@keyframes lockPulse { 0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(200,16,46,0.4)} 50%{transform:scale(1.05);box-shadow:0 0 60px rgba(200,16,46,0.6)} }
+
+.lockout-title { font-size: 18px; font-weight: 800; color: var(--red); letter-spacing: 2px; text-transform: uppercase; }
+.lockout-msg { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: center; line-height: 1.8; }
+.lockout-timer { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--red); }
+
+/* ── SCREENSHOT FLASH ── */
+.flash {
+  position: fixed; inset: 0; z-index: 500;
+  background: white; opacity: 0; pointer-events: none;
+  transition: opacity .05s;
+}
+.flash.pop { opacity: 1; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(200,16,46,0.2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ LOCKOUT ══════════════════ -->
+<div id="lockout-screen">
+  <div class="lockout-circle">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  </div>
+  <div class="lockout-title">Access Suspended</div>
+  <div class="lockout-msg">Too many failed login attempts.<br>Please wait before trying again.</div>
+  <div class="lockout-timer" id="lockout-timer">5:00</div>
+</div>
+
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-emblem">
+      <div class="login-circle"></div>
+      <div class="login-brand">Japan<span>Trip2026</span></div>
+      <div class="login-sub">Live Monitor Access</div>
+    </div>
+
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="l-user" autocomplete="off" spellcheck="false" placeholder="Enter username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="l-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+
+    <button class="login-btn" id="login-btn" onclick="doLogin()">SIGN IN</button>
+
+    <div class="login-error" id="login-error">Incorrect credentials. Please try again.</div>
+
+    <div class="attempt-dots" id="attempt-dots">
+      <div class="attempt-dot" id="dot-1"></div>
+      <div class="attempt-dot" id="dot-2"></div>
+      <div class="attempt-dot" id="dot-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ APP ══════════════════ -->
+<div id="app" style="display:none;flex-direction:column;height:100vh;">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-dot"></div>
+      <div class="topbar-name">Japan<span>Trip2026</span></div>
+    </div>
+    <div class="topbar-live" style="margin-left:16px">LIVE</div>
+
+    <div class="topbar-right">
+      <div id="clock-top" style="font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
+
+      <!-- Alert bell -->
+      <div class="alert-bell" onclick="toggleAlerts()" id="alert-bell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <div class="alert-badge" id="alert-badge">0</div>
+      </div>
+
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">J</div>
+        <span id="user-display">japantrip2026</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+
+    <!-- Alert Panel -->
+    <div class="alert-panel" id="alert-panel">
+      <div class="alert-panel-header">
+        <h4>⚠ Security Alerts</h4>
+        <span class="alert-clear" onclick="clearAlerts()">Clear all</span>
+      </div>
+      <div class="alert-entries" id="alert-entries">
+        <div class="alert-empty">No alerts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- Camera wrapper -->
+    <div class="cam-wrapper">
+      <div class="cam-header">
+        <div class="cam-title">
+          <h2>Camera Feed</h2>
+          <div class="cam-status-pill offline" id="cam-pill">NO SIGNAL</div>
+        </div>
+        <div class="cam-controls">
+          <button class="ctrl-btn ghost" id="snap-btn" onclick="takeSnapshot()" style="display:none">SNAPSHOT</button>
+          <button class="ctrl-btn ghost" id="stop-btn" onclick="stopCamera()" style="display:none">STOP</button>
+          <button class="ctrl-btn primary" id="start-btn" onclick="startCamera()">CONNECT CAMERA</button>
+        </div>
+      </div>
+
+      <div class="feed-box">
+        <video id="cam-video" autoplay playsinline muted></video>
+
+        <!-- No camera state -->
+        <div class="no-cam" id="no-cam">
+          <div class="no-cam-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+            </svg>
+          </div>
+          <h3 id="no-cam-title">No Camera Connected</h3>
+          <p id="no-cam-sub">Click "Connect Camera" to begin</p>
+        </div>
+
+        <!-- Active feed overlay -->
+        <div class="feed-overlay" id="feed-overlay">
+          <div class="feed-tl">
+            <div class="feed-badge live">● REC</div>
+            <div class="feed-badge label" id="feed-label">CAM 1</div>
+          </div>
+          <div class="feed-clock" id="feed-clock"></div>
+          <div class="feed-br">JAPANTRIP2026</div>
+        </div>
+
+        <div class="scanlines"></div>
+      </div>
+    </div>
+
+    <!-- Info bar -->
+    <div class="info-bar">
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+          </svg>
+        </div>
+        <div class="info-card-body">
+          <div class="info-card-label">Camera Status</div>
+          <div class="info-card-val" id="ic-cam-status">Disconnected</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="info-card-body">
+          <div class="info-card-label">Session Time</div>
+          <div class="info-card-val" id="ic-session">00:00:00</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="info-card-body">
+          <div class="info-card-label">Security</div>
+          <div class="info-card-val ok" id="ic-security">Secure</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+        </div>
+        <div class="info-card-body">
+          <div class="info-card-label">Failed Attempts</div>
+          <div class="info-card-val" id="ic-attempts">0</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Screenshot flash -->
+<div class="flash" id="flash"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  CREDENTIALS (obfuscated — not plaintext)
+// ══════════════════════════════════════════
+const _a = atob('amFwYW50cmlwMjAyNg==');   // encoded username
+const _b = atob('YW5vamV5MTIz');            // encoded password
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let failedAttempts = 0;
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_SECONDS = 300; // 5 minutes
+let lockoutTimer = null;
+let lockoutRemaining = 0;
+let isLockedOut = false;
+
+let loggedIn = false;
+let sessionStart = null;
+let sessionInterval = null;
+let clockInterval = null;
+let camStream = null;
+let alerts = [];
+let totalFailedGlobal = parseInt(sessionStorage.getItem('jt2026_fail') || '0');
+
+// Restore lockout if still active
+const lockoutEnd = parseInt(sessionStorage.getItem('jt2026_lockout') || '0');
+if (Date.now() < lockoutEnd) {
+  isLockedOut = true;
+  lockoutRemaining = Math.ceil((lockoutEnd - Date.now()) / 1000);
+  document.getElementById('lockout-screen').classList.add('show');
+  startLockoutCountdown();
+}
+
+// ══════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════
+function doLogin() {
+  if (isLockedOut) return;
+
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value;
+  const err = document.getElementById('login-error');
+
+  if (u === _a && p === _b) {
+    // Success
+    err.style.display = 'none';
+    failedAttempts = 0;
+    sessionStorage.setItem('jt2026_fail', '0');
+    loggedIn = true;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    startSession();
+  } else {
+    // Failed
+    failedAttempts++;
+    totalFailedGlobal++;
+    sessionStorage.setItem('jt2026_fail', totalFailedGlobal);
+
+    document.getElementById(`dot-${failedAttempts}`).classList.add('used');
+    err.style.display = 'block';
+    document.getElementById('l-pass').value = '';
+
+    // Shake animation
+    const card = document.querySelector('.login-card');
+    card.style.animation = 'none';
+    card.offsetHeight;
+    card.style.animation = 'shake .4s ease';
+
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      triggerLockout();
+    }
+  }
+}
+
+function triggerLockout() {
+  isLockedOut = true;
+  lockoutRemaining = LOCKOUT_SECONDS;
+  const end = Date.now() + LOCKOUT_SECONDS * 1000;
+  sessionStorage.setItem('jt2026_lockout', end);
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('lockout-screen').classList.add('show');
+  startLockoutCountdown();
+
+  // If admin is logged in, send alert
+  addAlert('danger', '🚨 Suspicious Access', `${MAX_ATTEMPTS} failed login attempts detected`, new Date().toLocaleTimeString());
+  updateSecurityIndicator();
+}
+
+function startLockoutCountdown() {
+  if (lockoutTimer) clearInterval(lockoutTimer);
+  updateLockoutDisplay();
+  lockoutTimer = setInterval(() => {
+    lockoutRemaining--;
+    updateLockoutDisplay();
+    if (lockoutRemaining <= 0) {
+      clearInterval(lockoutTimer);
+      isLockedOut = false;
+      failedAttempts = 0;
+      sessionStorage.removeItem('jt2026_lockout');
+      document.getElementById('lockout-screen').classList.remove('show');
+      document.getElementById('login-screen').style.display = 'flex';
+      // Reset dots
+      document.querySelectorAll('.attempt-dot').forEach(d => d.classList.remove('used'));
+      document.getElementById('login-error').style.display = 'none';
+    }
+  }, 1000);
+}
+
+function updateLockoutDisplay() {
+  const m = Math.floor(lockoutRemaining / 60);
+  const s = lockoutRemaining % 60;
+  document.getElementById('lockout-timer').textContent = `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function doLogout() {
+  loggedIn = false;
+  stopCamera();
+  if (sessionInterval) clearInterval(sessionInterval);
+  if (clockInterval) clearInterval(clockInterval);
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('l-user').value = '';
+  document.getElementById('l-pass').value = '';
+  alerts = [];
+  updateAlertBadge();
+}
+
+// ══════════════════════════════════════════
+//  SESSION
+// ══════════════════════════════════════════
+function startSession() {
+  sessionStart = Date.now();
+  updateClock();
+  clockInterval = setInterval(updateClock, 1000);
+  sessionInterval = setInterval(updateSessionTime, 1000);
+  document.getElementById('ic-cam-status').textContent = 'Disconnected';
+  updateSecurityIndicator();
+}
+
+function updateClock() {
+  const now = new Date().toLocaleString('en-PH', {
+    month:'short', day:'2-digit', year:'numeric',
+    hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+  });
+  document.getElementById('clock-top').textContent = now;
+  document.getElementById('feed-clock').textContent = new Date().toLocaleString('en-PH', {
+    month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+  });
+}
+
+function updateSessionTime() {
+  const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+  const h = Math.floor(elapsed / 3600);
+  const m = Math.floor((elapsed % 3600) / 60);
+  const s = elapsed % 60;
+  document.getElementById('ic-session').textContent =
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function updateSecurityIndicator() {
+  const el = document.getElementById('ic-security');
+  const fa = document.getElementById('ic-attempts');
+  const total = parseInt(sessionStorage.getItem('jt2026_fail') || '0');
+  fa.textContent = total;
+  if (total === 0) {
+    el.textContent = 'Secure'; el.className = 'info-card-val ok';
+  } else if (total < 3) {
+    el.textContent = 'Caution'; el.className = 'info-card-val warn';
+  } else {
+    el.textContent = 'Alert!'; el.className = 'info-card-val warn';
+  }
+}
+
+// ══════════════════════════════════════════
+//  CAMERA
+// ══════════════════════════════════════════
+async function startCamera() {
+  try {
+    const constraints = { video: { width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false };
+    camStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    const video = document.getElementById('cam-video');
+    video.srcObject = camStream;
+    video.style.display = 'block';
+
+    document.getElementById('no-cam').style.display = 'none';
+    document.getElementById('feed-overlay').classList.add('visible');
+    document.getElementById('cam-pill').textContent = '● LIVE';
+    document.getElementById('cam-pill').className = 'cam-status-pill live';
+    document.getElementById('start-btn').style.display = 'none';
+    document.getElementById('stop-btn').style.display = '';
+    document.getElementById('snap-btn').style.display = '';
+    document.getElementById('ic-cam-status').textContent = 'Connected';
+    document.getElementById('ic-cam-status').className = 'info-card-val ok';
+
+    // Get device label
+    const track = camStream.getVideoTracks()[0];
+    if (track) {
+      const label = track.label || 'Camera 1';
+      document.getElementById('feed-label').textContent = label.length > 20 ? label.slice(0,20)+'…' : label;
+    }
+
+  } catch (err) {
+    const noCamTitle = document.getElementById('no-cam-title');
+    const noCamSub = document.getElementById('no-cam-sub');
+    if (err.name === 'NotAllowedError') {
+      noCamTitle.textContent = 'No Camera Detected';
+      noCamSub.textContent = 'Camera permission was denied';
+    } else if (err.name === 'NotFoundError') {
+      noCamTitle.textContent = 'No Camera Detected';
+      noCamSub.textContent = 'No camera device found';
+    } else {
+      noCamTitle.textContent = 'No Camera Detected';
+      noCamSub.textContent = 'Unable to access camera';
+    }
+    document.getElementById('no-cam').style.display = 'flex';
+    addAlert('warn', 'Camera Error', err.message.slice(0, 60), new Date().toLocaleTimeString());
+  }
+}
+
+function stopCamera() {
+  if (camStream) {
+    camStream.getTracks().forEach(t => t.stop());
+    camStream = null;
+  }
+  const video = document.getElementById('cam-video');
+  video.srcObject = null;
+  video.style.display = 'none';
+  document.getElementById('no-cam').style.display = 'flex';
+  document.getElementById('no-cam-title').textContent = 'No Camera Connected';
+  document.getElementById('no-cam-sub').textContent = 'Click "Connect Camera" to begin';
+  document.getElementById('feed-overlay').classList.remove('visible');
+  document.getElementById('cam-pill').textContent = 'NO SIGNAL';
+  document.getElementById('cam-pill').className = 'cam-status-pill offline';
+  document.getElementById('start-btn').style.display = '';
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('snap-btn').style.display = 'none';
+  document.getElementById('ic-cam-status').textContent = 'Disconnected';
+  document.getElementById('ic-cam-status').className = 'info-card-val';
+}
+
+function takeSnapshot() {
+  const video = document.getElementById('cam-video');
+  if (!video.srcObject) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  // Flash effect
+  const flash = document.getElementById('flash');
+  flash.classList.add('pop');
+  setTimeout(() => flash.classList.remove('pop'), 150);
+
+  // Download
+  const a = document.createElement('a');
+  a.download = `jt2026_snapshot_${Date.now()}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ══════════════════════════════════════════
+//  ALERTS
+// ══════════════════════════════════════════
+function addAlert(type, title, desc, time) {
+  alerts.unshift({ type, title, desc, time });
+  updateAlertBadge();
+  renderAlerts();
+}
+
+function updateAlertBadge() {
+  const badge = document.getElementById('alert-badge');
+  if (alerts.length > 0) {
+    badge.textContent = alerts.length > 9 ? '9+' : alerts.length;
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+}
+
+function renderAlerts() {
+  const container = document.getElementById('alert-entries');
+  if (alerts.length === 0) {
+    container.innerHTML = '<div class="alert-empty">No alerts</div>';
+    return;
+  }
+  container.innerHTML = alerts.map(a => `
+    <div class="alert-entry">
+      <div class="alert-entry-dot ${a.type}"></div>
+      <div class="alert-entry-body">
+        <div class="alert-entry-title">${a.title}</div>
+        <div class="alert-entry-desc">${a.desc}</div>
+      </div>
+      <div class="alert-entry-time">${a.time}</div>
+    </div>`).join('');
+}
+
+function clearAlerts() {
+  alerts = [];
+  updateAlertBadge();
+  renderAlerts();
+}
+
+function toggleAlerts() {
+  document.getElementById('alert-panel').classList.toggle('open');
+}
+
+// Close alert panel on outside click
+document.addEventListener('click', e => {
+  const panel = document.getElementById('alert-panel');
+  const bell = document.getElementById('alert-bell');
+  if (!panel.contains(e.target) && !bell.contains(e.target)) {
+    panel.classList.remove('open');
+  }
+});
+
+// ══════════════════════════════════════════
+//  SHAKE ANIMATION
+// ══════════════════════════════════════════
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-8px)}
+  30%{transform:translateX(8px)}
+  45%{transform:translateX(-6px)}
+  60%{transform:translateX(6px)}
+  75%{transform:translateX(-3px)}
+  90%{transform:translateX(3px)}
+}`;
+document.head.appendChild(shakeStyle);
+
+// ══════════════════════════════════════════
+//  CHECK EXISTING LOCKOUT ON LOAD
+// ══════════════════════════════════════════
+window.addEventListener('load', () => {
+  const existing = parseInt(sessionStorage.getItem('jt2026_lockout') || '0');
+  if (Date.now() < existing) {
+    lockoutRemaining = Math.ceil((existing - Date.now()) / 1000);
+    isLockedOut = true;
+    document.getElementById('lockout-screen').classList.add('show');
+    startLockoutCountdown();
+  }
+  // Check if previous failed attempts exist for this session
+  updateSecurityIndicator();
+});
+</script>
+</body>
+</html>
