@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/rhqi56/YunoBall#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
+    "bcrypt": "^6.0.0",
     "express": "^5.2.1"
   }
 }

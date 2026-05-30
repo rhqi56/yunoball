@@ -801,10 +801,7 @@ body {
         <input class="modal-input" type="text" id="cam-port" placeholder="e.g. 8080 or 554">
         <label class="modal-label">Stream Path (optional)</label>
         <input class="modal-input" type="text" id="cam-path" placeholder="e.g. /video or /mjpeg/video.mjpeg">
-        <div class="modal-hint">
-          For <code>V380</code> cameras try path: <code>/live/ch00_0</code> or leave blank.<br>
-          Full stream URL will be: <code>http://[IP]:[PORT][PATH]</code>
-        </div>
+        <div class="modal-hint">Enter your camera IP address, port, and stream path if required.</div>
         <button class="modal-btn primary" onclick="connectCamera()">CONNECT CAMERA</button>
         <div id="cam-status-msg" style="display:none" class="status-indicator"></div>
       </div>
