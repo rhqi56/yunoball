@@ -731,9 +731,8 @@ body {
       </button>
 
       <div class="user-chip">
-        <div class="user-avatar" id="topbar-avatar">J</div>
-        <span id="topbar-username">japantrip2026</span>
-        <span id="user-role-tag" style="font-size:9px;background:var(--red);color:white;padding:1px 6px;border-radius:10px;font-weight:800;letter-spacing:1px;margin-left:2px">USER</span>
+        <div class="user-avatar" id="topbar-avatar">?</div>
+        <span id="topbar-username">Loading...</span>
       </div>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
@@ -1193,10 +1192,43 @@ function startSession() {
   sessionInterval = setInterval(updateSessionTime, 1000);
   updateSecurityStatus();
   if (alerts.length > 0) { updateAlertBadge(); renderAlerts(); }
+
+  // Update username display
+  if (currentUser) {
+    const av = document.getElementById('topbar-avatar');
+    const un = document.getElementById('topbar-username');
+    if (av) av.textContent = currentUser.username[0].toUpperCase();
+    if (un) un.textContent = currentUser.username;
+  }
+
   // Apply role-based UI
-  applyRoleUI(currentUser ? currentUser.role : "user");
+  applyRoleUI(currentUser ? currentUser.role : 'user');
+
   // Load logs from DB into alerts (admin only)
-  if (currentUser && currentUser.role === "admin") loadLogs();
+  if (currentUser && currentUser.role === 'admin') loadLogs();
+}
+
+function applyRoleUI(role) {
+  const isAdmin = role === 'admin';
+  // Alert bell — admin only
+  const bell = document.getElementById('alert-bell');
+  if (bell) bell.style.display = isAdmin ? 'flex' : 'none';
+  // History button — admin only
+  const histBtn = document.getElementById('history-btn');
+  if (histBtn) histBtn.style.display = isAdmin ? '' : 'none';
+  // Info cards — admin only
+  ['card-security','card-attempts','card-ip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isAdmin ? '' : 'none';
+  });
+  // Settings button — admin only
+  const settingsBtn = document.querySelector('.settings-btn');
+  if (settingsBtn) settingsBtn.style.display = isAdmin ? '' : 'none';
+  // Webcam button for users
+  const noSignalButtons = document.querySelectorAll('.no-cam-action');
+  noSignalButtons.forEach(btn => {
+    if (btn.textContent.includes('IP Camera')) btn.style.display = isAdmin ? '' : 'none';
+  });
 }
 
 async function loadLogs() {
@@ -1295,24 +1327,7 @@ async function doRegister() {
 // ══════════════════════════════════════
 //  ROLE-BASED UI
 // ══════════════════════════════════════
-function applyRoleUI(role) {
-  const isAdmin = role === 'admin';
-  // Alert bell
-  document.getElementById('alert-bell').style.display = isAdmin ? 'flex' : 'none';
-  // History button
-  document.getElementById('history-btn').style.display = isAdmin ? '' : 'none';
-  // Info cards
-  ['card-security','card-attempts','card-ip'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = isAdmin ? '' : 'none';
-  });
-  // Settings button (IP camera) - users can still use webcam
-  const settingsBtn = document.querySelector('.settings-btn');
-  if (settingsBtn) settingsBtn.style.display = isAdmin ? '' : 'none';
-  // Role tag in user chip
-  const roleTag = document.getElementById('user-role-tag');
-  if (roleTag) roleTag.textContent = isAdmin ? 'ADMIN' : 'USER';
-}
+
 
 // ══════════════════════════════════════
 //  LOGIN HISTORY PANEL
