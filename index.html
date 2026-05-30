@@ -801,7 +801,10 @@ body {
         <input class="modal-input" type="text" id="cam-port" placeholder="e.g. 8080 or 554">
         <label class="modal-label">Stream Path (optional)</label>
         <input class="modal-input" type="text" id="cam-path" placeholder="e.g. /video or /mjpeg/video.mjpeg">
-        <div class="modal-hint">Enter your camera IP address, port, and stream path if required.</div>
+        <div class="modal-hint">
+          For <code>V380</code> cameras try path: <code>/live/ch00_0</code> or leave blank.<br>
+          Full stream URL will be: <code>http://[IP]:[PORT][PATH]</code>
+        </div>
         <button class="modal-btn primary" onclick="connectCamera()">CONNECT CAMERA</button>
         <div id="cam-status-msg" style="display:none" class="status-indicator"></div>
       </div>
@@ -829,14 +832,9 @@ body {
 
 <script>
 // ══════════════════════════════════════
-//  CREDENTIALS (Base64 encoded)
-// ══════════════════════════════════════
-const _u = atob('amFwYW50cmlwMjAyNg==');
-const _p = atob('YW5vamV5MTIz');
-
-// ══════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════
+let currentUser = null;
 let failedAttempts = 0;
 const MAX_ATTEMPTS = 3;
 const LOCKOUT_SEC = 300;
@@ -868,36 +866,56 @@ function acceptTerms() {
 // ══════════════════════════════════════
 //  LOGIN
 // ══════════════════════════════════════
-function doLogin() {
+async function doLogin() {
   if (isLockedOut) return;
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value;
   const err = document.getElementById('login-error');
+  const btn = document.querySelector('.login-btn');
 
-  if (u === _u && p === _p) {
-    err.style.display = 'none';
-    failedAttempts = 0;
-    sessionStorage.setItem('jt_fail', '0');
-    totalFails = 0;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    startSession();
-  } else {
-    failedAttempts++;
-    totalFails++;
-    sessionStorage.setItem('jt_fail', totalFails);
-    document.getElementById(`dot-${failedAttempts}`).classList.add('used');
+  if (!u || !p) { err.style.display = 'block'; err.textContent = 'Please enter username and password.'; return; }
+
+  btn.textContent = 'SIGNING IN...'; btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      currentUser = data;
+      err.style.display = 'none';
+      failedAttempts = 0;
+      sessionStorage.setItem('jt_fail', '0');
+      totalFails = 0;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      startSession();
+    } else {
+      failedAttempts++;
+      totalFails++;
+      sessionStorage.setItem('jt_fail', totalFails);
+      if (failedAttempts <= MAX_ATTEMPTS) {
+        document.getElementById(`dot-${failedAttempts}`).classList.add('used');
+      }
+      err.style.display = 'block';
+      err.textContent = 'Incorrect credentials. Please try again.';
+      document.getElementById('l-pass').value = '';
+      const card = document.querySelector('.login-card');
+      card.style.animation = 'none';
+      void card.offsetHeight;
+      card.style.animation = 'shake .4s ease';
+      if (failedAttempts >= MAX_ATTEMPTS) triggerLockout();
+    }
+  } catch(e) {
     err.style.display = 'block';
-    document.getElementById('l-pass').value = '';
-
-    // Shake
-    const card = document.querySelector('.login-card');
-    card.style.animation = 'none';
-    void card.offsetHeight;
-    card.style.animation = 'shake .4s ease';
-
-    if (failedAttempts >= MAX_ATTEMPTS) triggerLockout();
+    err.textContent = 'Connection error. Please try again.';
   }
+
+  btn.textContent = 'SIGN IN →'; btn.disabled = false;
 }
 
 function triggerLockout() {
@@ -935,7 +953,17 @@ function updateLockoutDisplay() {
   document.getElementById('lockout-timer').textContent = `${m}:${String(s).padStart(2,'0')}`;
 }
 
-function doLogout() {
+async function doLogout() {
+  try {
+    if (currentUser) {
+      await fetch('/api/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: currentUser.username })
+      });
+    }
+  } catch(e) {}
+  currentUser = null;
   camConnected = false;
   disconnectCamera();
   clearInterval(sessionInterval);
@@ -956,6 +984,20 @@ function startSession() {
   sessionInterval = setInterval(updateSessionTime, 1000);
   updateSecurityStatus();
   if (alerts.length > 0) { updateAlertBadge(); renderAlerts(); }
+  // Load logs from DB into alerts
+  loadLogs();
+}
+
+async function loadLogs() {
+  try {
+    const res = await fetch('/api/logs');
+    const logs = await res.json();
+    logs.forEach(log => {
+      if (log.action === 'LOGIN_FAILED') {
+        addAlert('danger', '🚨 Failed Login', `User: ${log.username} | IP: ${log.ip_address}`, new Date(log.timestamp).toLocaleTimeString('en-PH'));
+      }
+    });
+  } catch(e) {}
 }
 
 function updateClock() {
