@@ -587,6 +587,74 @@ body {
   </div>
 </div>
 
+<!-- REGISTER SCREEN -->
+<div id="register-screen" style="display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffffff 0%,#fff5f5 50%,#ffe8ec 100%)">
+  <div class="login-card">
+    <div class="login-emblem">
+      <div class="login-circle"></div>
+      <div class="login-brand">Japan<span>Trip</span>2026</div>
+      <div class="login-sub">Create New Account</div>
+    </div>
+    <div class="field"><label>Full Name</label><input type="text" id="r-name" placeholder="Enter your full name"></div>
+    <div class="field"><label>Username</label><input type="text" id="r-user" placeholder="Choose a username"></div>
+    <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="Choose a password"></div>
+    <div class="field"><label>Confirm Password</label><input type="password" id="r-pass2" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    <button class="login-btn" id="reg-btn" onclick="doRegister()">CREATE ACCOUNT</button>
+    <div class="login-error" id="reg-error" style="display:none"></div>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--muted)">Already have an account? <span onclick="showLogin()" style="color:var(--red);font-weight:700;cursor:pointer">Sign In</span></div>
+  </div>
+</div>
+
+
+<!-- REGISTER SCREEN -->
+<div id="register-screen" style="display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffffff 0%,#fff5f5 50%,#ffe8ec 100%)">
+  <div class="login-card">
+    <div class="login-emblem">
+      <div class="login-circle"></div>
+      <div class="login-brand">Japan<span>Trip</span>2026</div>
+      <div class="login-sub">Create New Account</div>
+    </div>
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="r-name" autocomplete="off" placeholder="Enter your full name">
+    </div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="r-user" autocomplete="off" placeholder="Choose a username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="r-pass" placeholder="Choose a password">
+    </div>
+    <div class="field">
+      <label>Confirm Password</label>
+      <input type="password" id="r-pass2" placeholder="Repeat your password" onkeydown="if(event.key==='Enter')doRegister()">
+    </div>
+    <button class="login-btn" id="register-submit-btn" onclick="doRegister()">CREATE ACCOUNT</button>
+    <div class="login-error" id="register-error" style="display:none"></div>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--muted)">
+      Already have an account?
+      <span onclick="showLogin()" style="color:var(--red);font-weight:700;cursor:pointer;text-decoration:underline">Sign In</span>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN HISTORY PANEL -->
+<div id="history-panel" style="display:none;position:fixed;inset:0;z-index:150;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px)">
+  <div style="width:560px;max-width:95vw;max-height:80vh;background:white;border:1px solid rgba(200,16,46,0.15);border-top:4px solid var(--red);box-shadow:0 24px 60px rgba(200,16,46,0.15);display:flex;flex-direction:column;animation:rise .3s cubic-bezier(.16,1,.3,1) both">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(200,16,46,0.1)">
+      <h3 style="font-size:14px;font-weight:800;color:var(--text);letter-spacing:1px">📋 Login History</h3>
+      <div onclick="toggleHistory()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:18px;border-radius:50%;transition:all .2s">✕</div>
+    </div>
+    <div style="flex:1;overflow-y:auto" id="history-list">
+      <div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Loading...</div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid rgba(200,16,46,0.08);display:flex;justify-content:flex-end">
+      <button onclick="toggleHistory()" style="padding:8px 16px;background:none;border:1px solid rgba(200,16,46,0.2);color:var(--muted);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════
      LOCKOUT
 ══════════════════════════════════════ -->
@@ -627,6 +695,7 @@ body {
       <div class="attempt-dot" id="dot-2"></div>
       <div class="attempt-dot" id="dot-3"></div>
     </div>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--muted)">No account? <span onclick="showRegister()" style="color:var(--red);font-weight:700;cursor:pointer;text-decoration:underline">Create one</span></div>
   </div>
 </div>
 
@@ -640,11 +709,13 @@ body {
       <div class="topbar-name">Japan<span>Trip</span>2026</div>
     </div>
     <div class="topbar-live" style="margin-left:16px">LIVE</div>
+    <button id="history-btn" onclick="toggleHistory()" style="display:none;margin-left:12px;padding:5px 12px;background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);color:var(--red);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s">📋 Login History</button>
+    <button id="history-btn" onclick="toggleHistory()" style="display:none;margin-left:12px;padding:5px 12px;background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);color:var(--red);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px">📋 Login History</button>
 
     <div class="topbar-right">
       <div id="clock-top" style="font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
 
-      <div class="alert-bell" onclick="toggleAlerts()" id="alert-bell">
+      <div class="alert-bell" onclick="toggleAlerts()" id="alert-bell" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
@@ -660,8 +731,9 @@ body {
       </button>
 
       <div class="user-chip">
-        <div class="user-avatar">J</div>
-        <span>japantrip2026</span>
+        <div class="user-avatar" id="topbar-avatar">J</div>
+        <span id="topbar-username">japantrip2026</span>
+        <span id="user-role-tag" style="font-size:9px;background:var(--red);color:white;padding:1px 6px;border-radius:10px;font-weight:800;letter-spacing:1px;margin-left:2px">USER</span>
       </div>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
@@ -740,7 +812,7 @@ body {
           <div class="info-val" id="ic-session">00:00:00</div>
         </div>
       </div>
-      <div class="info-card">
+      <div class="info-card admin-only" id="card-security" style="display:none">
         <div class="info-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -751,7 +823,7 @@ body {
           <div class="info-val ok" id="ic-security">Secure</div>
         </div>
       </div>
-      <div class="info-card">
+      <div class="info-card admin-only" id="card-attempts" style="display:none">
         <div class="info-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -762,7 +834,7 @@ body {
           <div class="info-val" id="ic-attempts">0</div>
         </div>
       </div>
-      <div class="info-card">
+      <div class="info-card admin-only" id="card-ip" style="display:none">
         <div class="info-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -773,6 +845,35 @@ body {
           <div class="info-val" id="ic-ip">Not set</div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN HISTORY MODAL -->
+<div class="modal-overlay" id="history-modal">
+  <div class="modal" style="width:600px">
+    <div class="modal-header">
+      <h3>📋 Login History</h3>
+      <div class="modal-close" onclick="closeHistory()">✕</div>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:rgba(200,16,46,0.05)">
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">Username</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">Action</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">IP Address</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn ghost" onclick="closeHistory()">Close</button>
+      <button class="modal-btn primary" onclick="loadHistory()">Refresh</button>
     </div>
   </div>
 </div>
@@ -847,6 +948,114 @@ let clockInterval = null;
 let camConnected = false;
 let alerts = [];
 let totalFails = parseInt(sessionStorage.getItem('jt_fail') || '0');
+
+
+// ══════════════════════════════════════
+//  REGISTER
+// ══════════════════════════════════════
+function showRegister() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('register-screen').style.display = 'flex';
+}
+function showLogin() {
+  document.getElementById('register-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function doRegister() {
+  const name = document.getElementById('r-name').value.trim();
+  const u = document.getElementById('r-user').value.trim();
+  const p = document.getElementById('r-pass').value;
+  const p2 = document.getElementById('r-pass2').value;
+  const err = document.getElementById('reg-error');
+  const btn = document.getElementById('reg-btn');
+
+  err.style.display = 'none';
+  if (!name || !u || !p || !p2) { err.style.display='block'; err.textContent='All fields are required.'; return; }
+  if (p !== p2) { err.style.display='block'; err.textContent='Passwords do not match.'; return; }
+  if (p.length < 6) { err.style.display='block'; err.textContent='Password must be at least 6 characters.'; return; }
+
+  btn.textContent = 'CREATING...'; btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, username: u, password: p })
+    });
+    const data = await res.json();
+    if (data.success) {
+      err.style.display = 'block';
+      err.style.background = 'rgba(34,197,94,0.08)';
+      err.style.borderLeftColor = '#16a34a';
+      err.style.color = '#16a34a';
+      err.textContent = 'Account created! You can now sign in.';
+      setTimeout(() => { showLogin(); err.style.display='none'; }, 2000);
+    } else {
+      err.style.display = 'block'; err.textContent = data.message || 'Registration failed.';
+    }
+  } catch(e) {
+    err.style.display = 'block'; err.textContent = 'Connection error. Try again.';
+  }
+  btn.textContent = 'CREATE ACCOUNT'; btn.disabled = false;
+}
+
+// ══════════════════════════════════════
+//  ROLE-BASED UI
+// ══════════════════════════════════════
+function applyRoleUI(role) {
+  const isAdmin = role === 'admin';
+  // Show/hide admin-only elements
+  document.getElementById('alert-bell').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('history-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('card-security').style.display = isAdmin ? '' : 'none';
+  document.getElementById('card-attempts').style.display = isAdmin ? '' : 'none';
+  document.getElementById('card-ip').style.display = isAdmin ? '' : 'none';
+  // Hide settings IP camera section for users
+  const settingsBtn = document.querySelector('.settings-btn');
+  if (settingsBtn) settingsBtn.style.display = isAdmin ? '' : '';
+}
+
+// ══════════════════════════════════════
+//  LOGIN HISTORY
+// ══════════════════════════════════════
+function toggleHistory() {
+  const modal = document.getElementById('history-modal');
+  modal.classList.toggle('open');
+  if (modal.classList.contains('open')) loadHistory();
+}
+function closeHistory() {
+  document.getElementById('history-modal').classList.remove('open');
+}
+
+async function loadHistory() {
+  const tbody = document.getElementById('history-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Loading...</td></tr>';
+  try {
+    const res = await fetch('/api/logs');
+    const logs = await res.json();
+    if (!logs.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">No logs found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = logs.map(log => {
+      const actionColor = log.action === 'LOGIN_SUCCESS' ? '#16a34a' : log.action === 'LOGOUT' ? '#2563eb' : '#c8102e';
+      const ts = new Date(log.timestamp).toLocaleString('en-PH');
+      return `<tr style="border-bottom:1px solid rgba(200,16,46,0.06)">
+        <td style="padding:10px 14px;font-weight:700">${log.username}</td>
+        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:${actionColor};font-weight:700">${log.action}</td>
+        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">${log.ip_address || 'N/A'}</td>
+        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">${ts}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--red);font-family:var(--mono);font-size:11px">Failed to load logs</td></tr>';
+  }
+}
+
+document.getElementById('history-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeHistory();
+});
 
 // ══════════════════════════════════════
 //  TERMS
@@ -984,8 +1193,10 @@ function startSession() {
   sessionInterval = setInterval(updateSessionTime, 1000);
   updateSecurityStatus();
   if (alerts.length > 0) { updateAlertBadge(); renderAlerts(); }
-  // Load logs from DB into alerts
-  loadLogs();
+  // Apply role-based UI
+  applyRoleUI(currentUser ? currentUser.role : "user");
+  // Load logs from DB into alerts (admin only)
+  if (currentUser && currentUser.role === "admin") loadLogs();
 }
 
 async function loadLogs() {
@@ -1027,6 +1238,122 @@ function updateSecurityStatus() {
   else { sec.textContent = 'Alert!'; sec.className = 'info-val warn'; }
 }
 
+
+
+// ══════════════════════════════════════
+//  REGISTER
+// ══════════════════════════════════════
+function showRegister() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('register-screen').style.display = 'flex';
+}
+function showLogin() {
+  document.getElementById('register-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function doRegister() {
+  const name = document.getElementById('r-name').value.trim();
+  const username = document.getElementById('r-user').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  const pass2 = document.getElementById('r-pass2').value;
+  const err = document.getElementById('register-error');
+  const btn = document.getElementById('register-submit-btn');
+
+  err.style.display = 'none';
+  if (!name || !username || !pass) { err.style.display='block'; err.textContent='All fields are required.'; return; }
+  if (pass !== pass2) { err.style.display='block'; err.textContent='Passwords do not match.'; return; }
+  if (pass.length < 6) { err.style.display='block'; err.textContent='Password must be at least 6 characters.'; return; }
+
+  btn.textContent = 'CREATING...'; btn.disabled = true;
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, username, password: pass })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('register-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('l-user').value = username;
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('login-error').style.borderLeftColor = 'var(--success, #22c55e)';
+      document.getElementById('login-error').style.color = '#16a34a';
+      document.getElementById('login-error').textContent = 'Account created! You can now sign in.';
+    } else {
+      err.style.display = 'block';
+      err.textContent = data.message || 'Registration failed. Try a different username.';
+    }
+  } catch(e) {
+    err.style.display = 'block';
+    err.textContent = 'Connection error. Please try again.';
+  }
+  btn.textContent = 'CREATE ACCOUNT'; btn.disabled = false;
+}
+
+// ══════════════════════════════════════
+//  ROLE-BASED UI
+// ══════════════════════════════════════
+function applyRoleUI(role) {
+  const isAdmin = role === 'admin';
+  // Alert bell
+  document.getElementById('alert-bell').style.display = isAdmin ? 'flex' : 'none';
+  // History button
+  document.getElementById('history-btn').style.display = isAdmin ? '' : 'none';
+  // Info cards
+  ['card-security','card-attempts','card-ip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isAdmin ? '' : 'none';
+  });
+  // Settings button (IP camera) - users can still use webcam
+  const settingsBtn = document.querySelector('.settings-btn');
+  if (settingsBtn) settingsBtn.style.display = isAdmin ? '' : 'none';
+  // Role tag in user chip
+  const roleTag = document.getElementById('user-role-tag');
+  if (roleTag) roleTag.textContent = isAdmin ? 'ADMIN' : 'USER';
+}
+
+// ══════════════════════════════════════
+//  LOGIN HISTORY PANEL
+// ══════════════════════════════════════
+let historyOpen = false;
+async function toggleHistory() {
+  const panel = document.getElementById('history-panel');
+  historyOpen = !historyOpen;
+  panel.style.display = historyOpen ? 'flex' : 'none';
+  if (historyOpen) await loadHistory();
+}
+
+async function loadHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Loading...</div>';
+  try {
+    const res = await fetch('/api/logs');
+    const logs = await res.json();
+    if (!logs.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">No logs yet</div>';
+      return;
+    }
+    list.innerHTML = logs.map(log => {
+      const isSuccess = log.action === 'LOGIN_SUCCESS';
+      const isLogout = log.action === 'LOGOUT';
+      const color = isSuccess ? '#16a34a' : isLogout ? '#2563eb' : '#c8102e';
+      const icon = isSuccess ? '✓' : isLogout ? '→' : '✕';
+      const time = new Date(log.timestamp).toLocaleString('en-PH');
+      return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 24px;border-bottom:1px solid rgba(200,16,46,0.06)">' +
+        '<div style="width:24px;height:24px;border-radius:50%;background:' + color + '20;display:flex;align-items:center;justify-content:center;color:' + color + ';font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px">' + icon + '</div>' +
+        '<div style="flex:1">' +
+          '<div style="font-size:12px;font-weight:700;color:var(--text)">' + log.username + ' — <span style="color:' + color + '">' + log.action + '</span></div>' +
+          '<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px">IP: ' + (log.ip_address || 'unknown') + '</div>' +
+        '</div>' +
+        '<div style="font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap">' + time + '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Failed to load logs</div>';
+  }
+}
 
 // ══════════════════════════════════════
 //  WEBCAM
