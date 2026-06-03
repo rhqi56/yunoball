@@ -1040,18 +1040,7 @@ async function doRegister() {
 // ══════════════════════════════════════
 //  ROLE-BASED UI
 // ══════════════════════════════════════
-function applyRoleUI(role) {
-  const isAdmin = role === 'admin';
-  // Show/hide admin-only elements
-  document.getElementById('alert-bell').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('history-btn').style.display = isAdmin ? '' : 'none';
-  document.getElementById('card-security').style.display = isAdmin ? '' : 'none';
-  document.getElementById('card-attempts').style.display = isAdmin ? '' : 'none';
-  document.getElementById('card-ip').style.display = isAdmin ? '' : 'none';
-  // Hide settings IP camera section for users
-  const settingsBtn = document.querySelector('.settings-btn');
-  if (settingsBtn) settingsBtn.style.display = isAdmin ? '' : '';
-}
+
 
 // ══════════════════════════════════════
 //  LOGIN HISTORY
@@ -1257,7 +1246,7 @@ function applyRoleUI(role) {
   const histBtn = document.getElementById('history-btn');
   if (histBtn) histBtn.style.display = isAdmin ? '' : 'none';
   // Info cards — admin only
-  ['card-security','card-attempts','card-ip'].forEach(id => {
+  ['card-security','card-ip'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = isAdmin ? '' : 'none';
   });
