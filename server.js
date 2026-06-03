@@ -17,6 +17,7 @@ const supabase = createClient(
 // ── ACTIVE SESSIONS (in-memory) ──
 const sessions = new Map();
 
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(express.static('.'));
 
