@@ -786,7 +786,7 @@ body {
       </div>
 
       <div class="feed-box">
-        <img id="cam-img" src="" alt="Camera feed" onerror="onCamError()">
+        <img id="cam-img" src="" alt="Camera feed" onerror="if(this.src && this.src !== window.location.href) onCamError()">
         <video id="cam-video" autoplay playsinline muted style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>
 
         <div class="no-cam" id="no-cam">
