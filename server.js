@@ -176,6 +176,52 @@ app.get('/api/verify', requireAuth, (req, res) => {
   res.json({ success: true, user: req.user });
 });
 
+
+// ── GET ALL USERS — admin only ──
+app.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, username, role, created_at')
+    .order('created_at', { ascending: true });
+  if (error) return res.status(500).json({ success: false, message: 'Failed to fetch users.' });
+  res.json({ success: true, users: data });
+});
+
+// ── DELETE USER — admin only ──
+app.delete('/api/users/:username', requireAuth, requireAdmin, async (req, res) => {
+  const { username } = req.params;
+  if (username === req.user.username)
+    return res.status(400).json({ success: false, message: 'Cannot delete yourself.' });
+  const { error } = await supabase.from('users').delete().eq('username', username);
+  if (error) return res.status(500).json({ success: false, message: 'Failed to delete user.' });
+  await supabase.from('activity_logs').insert({
+    username: req.user.username,
+    action: 'DELETE_USER: ' + username,
+    ip_address: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+    status: 'success'
+  });
+  res.json({ success: true });
+});
+
+// ── CHANGE ROLE — admin only ──
+app.patch('/api/users/:username/role', requireAuth, requireAdmin, async (req, res) => {
+  const { username } = req.params;
+  const { role } = req.body;
+  if (!['admin','user'].includes(role))
+    return res.status(400).json({ success: false, message: 'Invalid role.' });
+  if (username === req.user.username)
+    return res.status(400).json({ success: false, message: 'Cannot change your own role.' });
+  const { error } = await supabase.from('users').update({ role }).eq('username', username);
+  if (error) return res.status(500).json({ success: false, message: 'Failed to update role.' });
+  await supabase.from('activity_logs').insert({
+    username: req.user.username,
+    action: 'ROLE_CHANGE: ' + username + ' -> ' + role,
+    ip_address: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+    status: 'success'
+  });
+  res.json({ success: true });
+});
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.listen(PORT, () => console.log(`Running on port ${PORT}`));
