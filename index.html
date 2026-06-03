@@ -759,7 +759,7 @@ body {
 
       <div class="user-chip">
         <div class="user-avatar" id="topbar-avatar">?</div>
-        <span id="topbar-username">Loading...</span>
+        <span id="topbar-username">—</span>
       </div>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
@@ -1264,11 +1264,8 @@ function applyRoleUI(role) {
   // Settings button — visible to all
   const settingsBtn = document.querySelector('.settings-btn');
   if (settingsBtn) settingsBtn.style.display = '';
-  // Webcam button for users
-  const noSignalButtons = document.querySelectorAll('.no-cam-action');
-  noSignalButtons.forEach(btn => {
-    if (btn.textContent.includes('IP Camera')) btn.style.display = isAdmin ? '' : 'none';
-  });
+  // All users can see webcam and IP camera buttons
+  document.querySelectorAll('.no-cam-action').forEach(btn => btn.style.display = '');
 }
 
 async function loadLogs() {
