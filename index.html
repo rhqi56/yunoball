@@ -881,47 +881,67 @@ body {
      SETTINGS MODAL
 ══════════════════════════════════════ -->
 <div class="modal-overlay" id="settings-modal">
-  <div class="modal">
+  <div class="modal" style="width:820px;max-width:96vw">
     <div class="modal-header">
       <h3>⚙ Camera Settings</h3>
       <div class="modal-close" onclick="closeSettings()">✕</div>
     </div>
-    <div class="modal-body">
-      <div class="modal-section">
-        <div class="modal-section-title">Webcam / Laptop Camera</div>
-        <div class="modal-hint">Request access to your device's built-in or USB camera. The browser will ask for permission first.</div>
-        <button class="modal-btn primary" onclick="startWebcam();closeSettings()">📷 CONNECT WEBCAM</button>
-      </div>
+    <div class="modal-body" style="padding:20px 24px">
+      <!-- Landscape two-column layout -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
 
-      <div class="modal-section">
-        <div class="modal-section-title">IP Camera Connection</div>
-        <label class="modal-label">Camera IP Address</label>
-        <input class="modal-input" type="text" id="cam-ip" placeholder="e.g. 192.168.1.64">
-        <label class="modal-label">Stream Port</label>
-        <input class="modal-input" type="text" id="cam-port" placeholder="e.g. 8080 or 554">
-        <label class="modal-label">Stream Path (optional)</label>
-        <input class="modal-input" type="text" id="cam-path" placeholder="e.g. /video or /mjpeg/video.mjpeg">
-        <div class="modal-hint">
-          For <code>V380</code> cameras try path: <code>/live/ch00_0</code> or leave blank.<br>
-          Full stream URL will be: <code>http://[IP]:[PORT][PATH]</code>
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- Webcam -->
+          <div class="modal-section" style="margin-bottom:20px">
+            <div class="modal-section-title">Webcam / Laptop Camera</div>
+            <button class="modal-btn primary" style="width:100%" onclick="startWebcam();closeSettings()">📷 CONNECT WEBCAM</button>
+          </div>
+
+          <!-- Stream URL (HTTPS/RTSP) -->
+          <div class="modal-section" style="margin-bottom:20px">
+            <div class="modal-section-title">Stream URL</div>
+            <label class="modal-label">Direct URL (HTTPS / RTSP)</label>
+            <input class="modal-input" type="text" id="cam-stream-url" placeholder="https://... or rtsp://...">
+            <button class="modal-btn primary" style="width:100%;margin-top:4px" onclick="connectStreamURL()">CONNECT STREAM</button>
+            <div id="stream-status-msg" style="display:none;margin-top:8px" class="status-indicator"></div>
+          </div>
         </div>
-        <button class="modal-btn primary" onclick="connectCamera()">CONNECT CAMERA</button>
-        <div id="cam-status-msg" style="display:none" class="status-indicator"></div>
-      </div>
 
-      <div class="modal-section">
-        <div class="modal-section-title">Camera Label</div>
-        <label class="modal-label">Display Name</label>
-        <input class="modal-input" type="text" id="cam-label" placeholder="e.g. CCTV 1 - Main Entrance">
-        <button class="modal-btn ghost" onclick="updateLabel()">UPDATE LABEL</button>
-      </div>
+        <!-- RIGHT COLUMN -->
+        <div>
+          <!-- IP Camera -->
+          <div class="modal-section" style="margin-bottom:20px">
+            <div class="modal-section-title">IP Camera Connection</div>
+            <label class="modal-label">Camera IP Address</label>
+            <input class="modal-input" type="text" id="cam-ip" placeholder="e.g. 192.168.1.64">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div>
+                <label class="modal-label">Port</label>
+                <input class="modal-input" type="text" id="cam-port" placeholder="e.g. 8080">
+              </div>
+              <div>
+                <label class="modal-label">Path (optional)</label>
+                <input class="modal-input" type="text" id="cam-path" placeholder="/video">
+              </div>
+            </div>
+            <button class="modal-btn primary" style="width:100%;margin-top:4px" onclick="connectCamera()">CONNECT IP CAMERA</button>
+            <div id="cam-status-msg" style="display:none;margin-top:8px" class="status-indicator"></div>
+          </div>
 
-      <div class="modal-section">
-        <div class="modal-section-title">Actions</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="modal-btn ghost" onclick="disconnectCamera()">Disconnect</button>
-          <button class="modal-btn ghost" onclick="takeSnapshot()">Take Snapshot</button>
+          <!-- Label + Actions -->
+          <div class="modal-section">
+            <div class="modal-section-title">Label & Actions</div>
+            <label class="modal-label">Display Name</label>
+            <input class="modal-input" type="text" id="cam-label" placeholder="e.g. CCTV 1 - Main Entrance" style="margin-bottom:8px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="modal-btn ghost" onclick="updateLabel()">Update Label</button>
+              <button class="modal-btn ghost" onclick="disconnectCamera()">Disconnect</button>
+              <button class="modal-btn ghost" onclick="takeSnapshot()">Snapshot</button>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
     <div class="modal-footer">
@@ -1371,6 +1391,60 @@ async function loadHistory() {
   } catch(e) {
     list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Failed to load logs</div>';
   }
+}
+
+
+// ══════════════════════════════════════
+//  STREAM URL (HTTPS / RTSP via HLS)
+// ══════════════════════════════════════
+async function connectStreamURL() {
+  const url = document.getElementById('cam-stream-url').value.trim();
+  const statusEl = document.getElementById('stream-status-msg');
+
+  if (!url) {
+    showStreamStatus('Please enter a stream URL.', 'error');
+    return;
+  }
+
+  disconnectCamera();
+
+  // HTTPS MJPEG or image stream
+  if (url.startsWith('http')) {
+    const img = document.getElementById('cam-img');
+    img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+    img.style.display = 'block';
+    document.getElementById('no-cam').style.display = 'none';
+    document.getElementById('feed-overlay').classList.add('visible');
+    document.getElementById('cam-pill').textContent = '● LIVE';
+    document.getElementById('cam-pill').className = 'cam-pill live';
+    document.getElementById('ic-status').textContent = 'Stream Active';
+    document.getElementById('ic-status').className = 'info-val ok';
+    document.getElementById('ic-ip').textContent = new URL(url).hostname;
+    document.getElementById('feed-label').textContent = 'IP CAM';
+    showStreamStatus('Connected to HTTPS stream.', 'success');
+    img.onerror = () => {
+      showStreamStatus('Cannot reach stream URL. Check if it is accessible.', 'error');
+      onCamError();
+    };
+    closeSettings();
+    return;
+  }
+
+  // RTSP — browser cannot play RTSP directly, show instructions
+  if (url.startsWith('rtsp')) {
+    showStreamStatus('RTSP streams cannot play directly in browsers. Use a Cloudflare Stream or HLS proxy URL (https://...) instead.', 'error');
+    return;
+  }
+
+  showStreamStatus('Invalid URL. Use https:// or rtsp://', 'error');
+}
+
+function showStreamStatus(msg, type) {
+  const el = document.getElementById('stream-status-msg');
+  el.style.display = 'flex';
+  el.className = 'status-indicator ' + type;
+  const icons = { success:'✓', error:'✕', loading:'◌' };
+  el.textContent = (icons[type] || '') + ' ' + msg;
 }
 
 // ══════════════════════════════════════
