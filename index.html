@@ -7,718 +7,232 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --red: #c8102e;
-  --red2: #e8192c;
-  --red3: #ff4d6d;
-  --white: #ffffff;
-  --panel: rgba(255,255,255,0.85);
+  --red: #c8102e; --red2: #e8192c; --red3: #ff4d6d;
+  --text: #1a0a0d; --muted: #7a4a52;
   --border: rgba(200,16,46,0.2);
-  --text: #1a0a0d;
-  --muted: #7a4a52;
   --mono: 'Space Mono', monospace;
   --sans: 'Syne', sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: var(--sans); overflow: hidden; }
-body {
-  background: linear-gradient(160deg, #fff5f5 0%, #ffffff 40%, #fff0f0 100%);
-}
+body { background: linear-gradient(160deg, #fff5f5 0%, #ffffff 40%, #fff0f0 100%); }
 
-/* ══════════════════════════════════════
-   TERMS & CONDITIONS
-══════════════════════════════════════ */
-#terms-screen {
-  position: fixed; inset: 0; z-index: 300;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #fff5f5, #ffe8ec);
-}
-#terms-screen::before {
-  content: '';
-  position: absolute; width: 700px; height: 700px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,16,46,0.05) 0%, transparent 70%);
-  top: 50%; left: 50%; transform: translate(-50%,-50%);
-  pointer-events: none;
-}
-.terms-card {
-  width: 620px; max-width: 95vw; max-height: 90vh;
-  background: white;
-  border: 1px solid rgba(200,16,46,0.15);
-  border-top: 4px solid var(--red);
-  box-shadow: 0 32px 80px rgba(200,16,46,0.1), 0 4px 20px rgba(0,0,0,0.06);
-  display: flex; flex-direction: column;
-  animation: rise .5s cubic-bezier(.16,1,.3,1) both;
-  position: relative; z-index: 1;
-}
-@keyframes rise {
-  from { opacity:0; transform:translateY(20px) scale(.98); }
-  to   { opacity:1; transform:translateY(0) scale(1); }
-}
-.terms-header {
-  padding: 28px 32px 20px;
-  border-bottom: 1px solid rgba(200,16,46,0.1);
-}
-.terms-logo {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
-}
-.terms-circle {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, var(--red3), var(--red));
-  box-shadow: 0 4px 16px rgba(200,16,46,0.35);
-  flex-shrink: 0;
-}
-.terms-logo-text { font-size: 18px; font-weight: 800; letter-spacing: 3px; color: var(--text); }
-.terms-logo-text span { color: var(--red); }
-.terms-logo-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; display: block; margin-top: 2px; }
-.terms-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-.terms-subtitle { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-.terms-body {
-  flex: 1; overflow-y: auto; padding: 24px 32px;
-  font-size: 12px; line-height: 1.8; color: #444;
-}
-.terms-body h3 {
-  font-size: 11px; font-weight: 800; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red);
-  margin: 18px 0 8px;
-}
-.terms-body h3:first-child { margin-top: 0; }
-.terms-body p { margin-bottom: 8px; color: #555; }
-.terms-body ul { padding-left: 16px; margin-bottom: 8px; }
-.terms-body ul li { margin-bottom: 4px; color: #555; }
-.terms-body .highlight {
-  background: rgba(200,16,46,0.05);
-  border-left: 3px solid var(--red);
-  padding: 10px 14px; margin: 12px 0;
-  font-family: var(--mono); font-size: 11px; color: var(--text);
-}
-.terms-effective {
-  margin-top: 16px; padding: 10px 14px;
-  background: #f8f8f8; border: 1px solid #eee;
-  font-family: var(--mono); font-size: 10px; color: var(--muted);
-}
-
-.terms-footer {
-  padding: 20px 32px;
-  border-top: 1px solid rgba(200,16,46,0.1);
-  background: rgba(255,245,245,0.5);
-}
-.terms-check {
-  display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; cursor: pointer;
-}
-.terms-check input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--red); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
-.terms-check label { font-size: 12px; color: var(--text); cursor: pointer; line-height: 1.5; }
-.terms-check label span { color: var(--red); font-weight: 700; }
-.terms-agree-btn {
-  width: 100%; padding: 13px;
-  background: linear-gradient(135deg, var(--red2), var(--red));
-  color: white; font-family: var(--sans); font-size: 13px;
-  font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-  border: none; cursor: pointer; border-radius: 2px;
-  box-shadow: 0 4px 16px rgba(200,16,46,0.3);
-  transition: all .2s; opacity: .4; pointer-events: none;
-}
-.terms-agree-btn.active { opacity: 1; pointer-events: all; }
-.terms-agree-btn.active:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,16,46,0.4); }
-
-/* ══════════════════════════════════════
-   LOCKOUT SCREEN
-══════════════════════════════════════ */
-#lockout-screen {
-  display: none; position: fixed; inset: 0; z-index: 200;
-  background: linear-gradient(135deg, #fff5f5, #ffe8ec);
-  align-items: center; justify-content: center; flex-direction: column; gap: 16px;
-}
-#lockout-screen.show { display: flex; }
-.lockout-circle {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: radial-gradient(circle, var(--red3), var(--red));
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 40px rgba(200,16,46,0.4);
-  animation: lockPulse 1.5s ease-in-out infinite;
-}
+/* ── ANIMATIONS ── */
+@keyframes rise { from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+@keyframes breathe { 0%,100%{box-shadow:0 4px 20px rgba(200,16,46,0.4)}50%{box-shadow:0 4px 32px rgba(200,16,46,0.7)} }
 @keyframes lockPulse { 0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(200,16,46,0.4)}50%{transform:scale(1.05);box-shadow:0 0 60px rgba(200,16,46,0.6)} }
-.lockout-title { font-size: 18px; font-weight: 800; color: var(--red); letter-spacing: 2px; text-transform: uppercase; }
-.lockout-msg { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: center; line-height: 1.8; }
-.lockout-timer { font-family: var(--mono); font-size: 36px; font-weight: 700; color: var(--red); }
-.lockout-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+@keyframes shake { 0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(8px)}45%{transform:translateX(-5px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)} }
+@keyframes popIn { from{transform:scale(0)}to{transform:scale(1)} }
+@keyframes dropDown { from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)} }
 
-/* ══════════════════════════════════════
-   LOGIN SCREEN
-══════════════════════════════════════ */
-#login-screen {
-  position: fixed; inset: 0; z-index: 100;
-  display: none; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #ffffff 0%, #fff5f5 50%, #ffe8ec 100%);
-}
-#login-screen::before {
-  content: '';
-  position: absolute; width: 600px; height: 600px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,16,46,0.06) 0%, transparent 70%);
-  top: 50%; left: 50%; transform: translate(-50%,-50%);
-  pointer-events: none;
-}
+/* ── LOGIN CARD ── */
 .login-card {
   width: 380px; background: rgba(255,255,255,0.95);
-  border: 1px solid rgba(200,16,46,0.2);
-  border-top: 4px solid var(--red);
+  border: 1px solid var(--border); border-top: 4px solid var(--red);
   box-shadow: 0 24px 80px rgba(200,16,46,0.12), 0 4px 16px rgba(0,0,0,0.06);
-  padding: 44px 40px 40px;
-  animation: rise .5s cubic-bezier(.16,1,.3,1) both;
-  position: relative; z-index: 1;
-}
-.login-emblem {
-  display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 32px;
+  padding: 44px 40px 40px; animation: rise .5s cubic-bezier(.16,1,.3,1) both; position: relative; z-index: 1;
 }
 .login-circle {
   width: 52px; height: 52px; border-radius: 50%;
   background: radial-gradient(circle at 40% 35%, var(--red3), var(--red));
-  box-shadow: 0 4px 20px rgba(200,16,46,0.4);
-  animation: breathe 3s ease-in-out infinite;
-}
-@keyframes breathe {
-  0%,100%{box-shadow:0 4px 20px rgba(200,16,46,0.4)}
-  50%{box-shadow:0 4px 32px rgba(200,16,46,0.7)}
+  box-shadow: 0 4px 20px rgba(200,16,46,0.4); animation: breathe 3s ease-in-out infinite;
 }
 .login-brand { font-size: 22px; font-weight: 800; letter-spacing: 4px; color: var(--text); }
 .login-brand span { color: var(--red); }
 .login-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; }
-
 .field { margin-bottom: 16px; }
 .field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
 .field input {
-  width: 100%; padding: 12px 14px;
-  border: 1px solid rgba(200,16,46,0.2);
-  background: rgba(255,245,245,0.5);
-  color: var(--text); font-family: var(--mono); font-size: 13px;
-  outline: none; transition: all .2s; border-radius: 2px;
+  width: 100%; padding: 12px 14px; border: 1px solid var(--border);
+  background: rgba(255,245,245,0.5); color: var(--text);
+  font-family: var(--mono); font-size: 13px; outline: none; transition: all .2s; border-radius: 2px;
 }
 .field input:focus { border-color: var(--red); background: white; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
-
 .login-btn {
   width: 100%; padding: 14px; margin-top: 8px;
-  background: linear-gradient(135deg, var(--red2), var(--red));
-  color: white; font-family: var(--sans); font-size: 13px;
-  font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-  border: none; cursor: pointer; border-radius: 2px;
+  background: linear-gradient(135deg, var(--red2), var(--red)); color: white;
+  font-family: var(--sans); font-size: 13px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; border: none; cursor: pointer; border-radius: 2px;
   transition: all .2s; box-shadow: 0 4px 16px rgba(200,16,46,0.3);
 }
 .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,16,46,0.4); }
-
-.login-error {
-  display: none; margin-top: 14px; padding: 10px 14px;
-  background: rgba(200,16,46,0.07); border-left: 3px solid var(--red);
-  font-size: 12px; color: var(--red); font-family: var(--mono); border-radius: 0 2px 2px 0;
-}
-
-.attempt-dots { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
-.attempt-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  border: 1.5px solid rgba(200,16,46,0.25); transition: all .3s;
-}
+.login-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.login-error { display: none; margin-top: 14px; padding: 10px 14px; background: rgba(200,16,46,0.07); border-left: 3px solid var(--red); font-size: 12px; color: var(--red); font-family: var(--mono); border-radius: 0 2px 2px 0; }
+.attempt-dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid rgba(200,16,46,0.25); transition: all .3s; }
 .attempt-dot.used { background: var(--red); border-color: var(--red); box-shadow: 0 0 6px rgba(200,16,46,0.4); }
 
-/* ══════════════════════════════════════
-   APP
-══════════════════════════════════════ */
-#app { display: none; height: 100vh; flex-direction: column; }
+/* ── MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 150; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border: 1px solid var(--border); border-top: 4px solid var(--red); box-shadow: 0 24px 60px rgba(200,16,46,0.15); animation: rise .3s cubic-bezier(.16,1,.3,1) both; display: flex; flex-direction: column; max-height: 85vh; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid rgba(200,16,46,0.1); flex-shrink: 0; }
+.modal-head h3 { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: 1px; }
+.modal-close { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 18px; border-radius: 50%; transition: all .2s; }
+.modal-close:hover { background: rgba(200,16,46,0.08); color: var(--red); }
+.modal-foot { padding: 14px 24px; border-top: 1px solid rgba(200,16,46,0.08); display: flex; justify-content: flex-end; flex-shrink: 0; }
 
-/* TOPBAR */
+/* ── BUTTONS ── */
+.btn { padding: 8px 16px; font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all .2s; }
+.btn-primary { background: linear-gradient(135deg, var(--red2), var(--red)); color: white; border: none; box-shadow: 0 3px 12px rgba(200,16,46,0.3); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(200,16,46,0.4); }
+.btn-ghost { background: none; border: 1px solid var(--border); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--red); color: var(--red); }
+.btn-danger { background: rgba(200,16,46,0.07); border: 1px solid var(--border); color: var(--red); }
+.btn-danger:hover { background: rgba(200,16,46,0.15); }
+
+/* ── TOPBAR ── */
 .topbar {
   height: 52px; display: flex; align-items: center;
   background: rgba(255,255,255,0.9); backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(200,16,46,0.15);
-  padding: 0 20px; flex-shrink: 0;
-  box-shadow: 0 1px 12px rgba(200,16,46,0.06);
-  position: relative; z-index: 50;
+  border-bottom: 1px solid rgba(200,16,46,0.15); padding: 0 20px;
+  flex-shrink: 0; box-shadow: 0 1px 12px rgba(200,16,46,0.06); position: relative; z-index: 50;
 }
-.topbar-brand { display: flex; align-items: center; gap: 10px; padding-right: 20px; border-right: 1px solid rgba(200,16,46,0.15); }
-.topbar-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: radial-gradient(circle, var(--red3), var(--red));
-  box-shadow: 0 0 8px rgba(200,16,46,0.6); animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+.topbar-dot { width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle, var(--red3), var(--red)); box-shadow: 0 0 8px rgba(200,16,46,0.6); animation: pulse 2s infinite; }
 .topbar-name { font-size: 15px; font-weight: 800; letter-spacing: 3px; color: var(--text); }
 .topbar-name span { color: var(--red); }
-.topbar-live {
-  margin-left: 16px; display: flex; align-items: center; gap: 6px;
-  font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 1px;
-}
+.topbar-live { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 1px; margin-left: 16px; }
 .topbar-live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--red); animation:pulse 1s infinite; }
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
-/* Alert bell */
-.alert-bell {
-  position: relative; cursor: pointer;
-  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; transition: background .2s;
-}
+/* ── ALERT BELL ── */
+.alert-bell { position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; transition: background .2s; }
 .alert-bell:hover { background: rgba(200,16,46,0.08); }
 .alert-bell svg { color: var(--muted); transition: color .2s; }
 .alert-bell:hover svg { color: var(--red); }
-.alert-badge {
-  display: none; position: absolute; top: 3px; right: 3px;
-  width: 15px; height: 15px; border-radius: 50%;
-  background: var(--red); color: white;
-  font-size: 8px; font-weight: 800; font-family: var(--mono);
-  align-items: center; justify-content: center;
-  box-shadow: 0 0 6px rgba(200,16,46,0.5);
-}
+.alert-badge { display: none; position: absolute; top: 3px; right: 3px; width: 15px; height: 15px; border-radius: 50%; background: var(--red); color: white; font-size: 8px; font-weight: 800; font-family: var(--mono); align-items: center; justify-content: center; box-shadow: 0 0 6px rgba(200,16,46,0.5); }
 .alert-badge.show { display: flex; animation: popIn .3s cubic-bezier(.16,1,.3,1); }
-@keyframes popIn { from{transform:scale(0)}to{transform:scale(1)} }
-
-/* Settings button */
-.settings-btn {
-  display: flex; align-items: center; gap: 6px; padding: 7px 14px;
-  border: 1px solid rgba(200,16,46,0.2); background: none;
-  color: var(--muted); font-family: var(--sans); font-size: 11px;
-  font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-  cursor: pointer; border-radius: 2px; transition: all .2s;
-}
-.settings-btn:hover { border-color: var(--red); color: var(--red); background: rgba(200,16,46,0.05); }
-
-.user-chip {
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 12px 6px 8px;
-  background: rgba(200,16,46,0.06); border: 1px solid rgba(200,16,46,0.15); border-radius: 20px;
-}
-.user-avatar {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--red3), var(--red));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 800; color: white;
-}
-.user-chip span { font-size: 12px; font-weight: 700; color: var(--text); }
-.logout-btn {
-  padding: 7px 14px; background: none;
-  border: 1px solid rgba(200,16,46,0.2); color: var(--muted);
-  font-family: var(--sans); font-size: 11px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  cursor: pointer; border-radius: 2px; transition: all .2s;
-}
-.logout-btn:hover { border-color: var(--red); color: var(--red); background: rgba(200,16,46,0.05); }
 
 /* Alert dropdown */
-.alert-panel {
-  display: none; position: absolute; top: 54px; right: 160px; z-index: 100;
-  width: 320px; background: white;
-  border: 1px solid rgba(200,16,46,0.15);
-  border-top: 3px solid var(--red);
-  box-shadow: 0 12px 40px rgba(200,16,46,0.12);
-  animation: dropDown .2s ease both;
-}
+.alert-panel { display: none; position: absolute; top: 54px; right: 20px; z-index: 100; width: 320px; background: white; border: 1px solid var(--border); border-top: 3px solid var(--red); box-shadow: 0 12px 40px rgba(200,16,46,0.12); animation: dropDown .2s ease; }
 .alert-panel.open { display: block; }
-@keyframes dropDown { from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)} }
-.alert-panel-header {
-  padding: 12px 16px; border-bottom: 1px solid rgba(200,16,46,0.1);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.alert-panel-header h4 { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text); }
-.alert-clear { font-size: 11px; color: var(--red); cursor: pointer; font-weight: 700; }
-.alert-entries { max-height: 260px; overflow-y: auto; }
 .alert-entry { display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(200,16,46,0.06); }
 .alert-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
-.alert-dot.danger { background: var(--red); }
-.alert-dot.warn { background: #f59e0b; }
-.alert-dot.info { background: #3b82f6; }
-.alert-body { flex: 1; }
-.alert-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-.alert-desc { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-.alert-time { font-size: 10px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
-.alert-empty { padding: 24px; text-align: center; font-size: 12px; color: var(--muted); font-family: var(--mono); }
+.alert-dot.danger { background: var(--red); } .alert-dot.warn { background: #f59e0b; } .alert-dot.info { background: #3b82f6; }
 
-/* ══════════════════════════════════════
-   SETTINGS MODAL
-══════════════════════════════════════ */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 150;
-  background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  width: 480px; max-width: 95vw;
-  background: white; border: 1px solid rgba(200,16,46,0.15);
-  border-top: 4px solid var(--red);
-  box-shadow: 0 24px 60px rgba(200,16,46,0.15);
-  animation: rise .3s cubic-bezier(.16,1,.3,1) both;
-}
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 24px; border-bottom: 1px solid rgba(200,16,46,0.1);
-}
-.modal-header h3 { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: 1px; }
-.modal-close {
-  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--muted); font-size: 18px; border-radius: 50%; transition: all .2s;
-}
-.modal-close:hover { background: rgba(200,16,46,0.08); color: var(--red); }
-.modal-body { padding: 24px; }
-.modal-section { margin-bottom: 24px; }
-.modal-section:last-child { margin-bottom: 0; }
-.modal-section-title {
-  font-size: 10px; font-weight: 800; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red); margin-bottom: 12px;
-  padding-bottom: 8px; border-bottom: 1px solid rgba(200,16,46,0.1);
-}
-.modal-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
-.modal-input {
-  width: 100%; padding: 11px 14px;
-  border: 1px solid rgba(200,16,46,0.2); background: rgba(255,245,245,0.4);
-  color: var(--text); font-family: var(--mono); font-size: 12px;
-  outline: none; transition: all .2s; border-radius: 2px; margin-bottom: 10px;
-}
-.modal-input:focus { border-color: var(--red); background: white; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
-.modal-hint { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
-.modal-hint code {
-  background: rgba(200,16,46,0.07); color: var(--red);
-  padding: 1px 6px; border-radius: 2px; font-size: 10px;
-}
-.modal-btn {
-  padding: 10px 20px; font-size: 12px; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase; border: none;
-  cursor: pointer; border-radius: 2px; font-family: var(--sans); transition: all .2s;
-}
-.modal-btn.primary {
-  background: linear-gradient(135deg, var(--red2), var(--red)); color: white;
-  box-shadow: 0 3px 12px rgba(200,16,46,0.3);
-}
-.modal-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(200,16,46,0.4); }
-.modal-btn.ghost { background: none; border: 1px solid rgba(200,16,46,0.2); color: var(--muted); }
-.modal-btn.ghost:hover { border-color: var(--red); color: var(--red); }
-.modal-footer { display: flex; gap: 8px; justify-content: flex-end; padding: 16px 24px; border-top: 1px solid rgba(200,16,46,0.08); }
+/* ── USER CHIP ── */
+.user-chip { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; background: rgba(200,16,46,0.06); border: 1px solid rgba(200,16,46,0.15); border-radius: 20px; }
+.user-avatar { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--red3), var(--red)); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: white; }
 
-.status-indicator {
-  display: flex; align-items: center; gap: 8px; margin-top: 10px;
-  padding: 10px 14px; border-radius: 2px; font-family: var(--mono); font-size: 11px;
-}
-.status-indicator.success { background: rgba(34,197,94,0.08); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
-.status-indicator.error { background: rgba(200,16,46,0.07); color: var(--red); border: 1px solid rgba(200,16,46,0.2); }
-.status-indicator.loading { background: rgba(59,130,246,0.07); color: #2563eb; border: 1px solid rgba(59,130,246,0.2); }
+/* ── FEED BOX ── */
+.feed-box { width: 100%; aspect-ratio: 16/9; background: #080205; border: 1px solid var(--border); position: relative; overflow: hidden; box-shadow: 0 8px 48px rgba(200,16,46,0.1), 0 2px 12px rgba(0,0,0,0.08); }
+.feed-box::before, .feed-box::after { content:''; position:absolute; width:22px; height:22px; border-color:var(--red); border-style:solid; z-index:5; pointer-events:none; }
+.feed-box::before { top:10px; left:10px; border-width:2px 0 0 2px; }
+.feed-box::after { bottom:10px; right:10px; border-width:0 2px 2px 0; }
+.no-cam { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+.no-cam-icon { width:60px; height:60px; border-radius:50%; border:2px solid rgba(200,16,46,0.15); display:flex; align-items:center; justify-content:center; color:rgba(200,16,46,0.25); }
+.no-cam h3 { font-family:var(--mono); font-size:13px; font-weight:700; color:rgba(200,16,46,0.35); letter-spacing:2px; text-transform:uppercase; }
+.no-cam p { font-size:12px; color:rgba(200,16,46,0.2); font-family:var(--mono); letter-spacing:1px; }
+.no-cam-action { padding:8px 20px; background:rgba(200,16,46,0.07); border:1px solid var(--border); color:var(--red); font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border-radius:2px; transition:all .2s; }
+.no-cam-action:hover { background:rgba(200,16,46,0.12); }
+.cam-pill { font-family:var(--mono); font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:1px; }
+.cam-pill.live { background:rgba(200,16,46,0.1); color:var(--red); border:1px solid rgba(200,16,46,0.25); }
+.cam-pill.offline { background:rgba(100,100,100,0.08); color:var(--muted); border:1px solid rgba(100,100,100,0.15); }
+.cam-pill.connecting { background:rgba(59,130,246,0.1); color:#2563eb; border:1px solid rgba(59,130,246,0.25); }
+.feed-overlay { position:absolute; inset:0; pointer-events:none; display:none; }
+.feed-overlay.visible { display:block; }
+.feed-badge { font-family:var(--mono); font-size:10px; font-weight:700; padding:3px 8px; letter-spacing:1px; }
+.feed-badge.live { background:var(--red); color:white; }
+.feed-badge.label { background:rgba(0,0,0,0.55); color:rgba(255,255,255,0.85); }
+.scanlines { position:absolute; inset:0; pointer-events:none; z-index:3; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px); }
 
-/* ══════════════════════════════════════
-   MAIN CONTENT
-══════════════════════════════════════ */
-.main {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 20px; gap: 16px; overflow: hidden; position: relative;
-}
-.main::before {
-  content: ''; position: fixed; width: 500px; height: 500px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,16,46,0.03) 0%, transparent 65%);
-  top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 0;
-}
+/* ── INFO CARDS ── */
+.info-card { flex:1; padding:12px 16px; background:rgba(255,255,255,0.75); border:1px solid rgba(200,16,46,0.1); backdrop-filter:blur(8px); display:flex; align-items:center; gap:10px; }
+.info-icon { width:30px; height:30px; border-radius:50%; background:rgba(200,16,46,0.07); display:flex; align-items:center; justify-content:center; color:var(--red); flex-shrink:0; }
+.info-label { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+.info-val { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--text); }
+.info-val.ok { color:#16a34a; } .info-val.warn { color:var(--red); }
 
-/* Camera */
-.cam-wrapper { position: relative; z-index: 1; width: 100%; max-width: 900px; }
-.cam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.cam-title { display: flex; align-items: center; gap: 10px; }
-.cam-title h2 { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--text); }
-.cam-pill {
-  font-family: var(--mono); font-size: 10px; font-weight: 700;
-  padding: 3px 10px; border-radius: 20px; letter-spacing: 1px;
-}
-.cam-pill.live { background: rgba(200,16,46,0.1); color: var(--red); border: 1px solid rgba(200,16,46,0.25); }
-.cam-pill.offline { background: rgba(100,100,100,0.08); color: var(--muted); border: 1px solid rgba(100,100,100,0.15); }
-.cam-pill.connecting { background: rgba(59,130,246,0.1); color: #2563eb; border: 1px solid rgba(59,130,246,0.25); }
+/* ── STATUS INDICATOR ── */
+.status-indicator { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:2px; font-family:var(--mono); font-size:11px; margin-top:8px; }
+.status-indicator.success { background:rgba(34,197,94,0.08); color:#16a34a; border:1px solid rgba(34,197,94,0.2); }
+.status-indicator.error { background:rgba(200,16,46,0.07); color:var(--red); border:1px solid var(--border); }
+.status-indicator.loading { background:rgba(59,130,246,0.07); color:#2563eb; border:1px solid rgba(59,130,246,0.2); }
 
-.feed-box {
-  width: 100%; aspect-ratio: 16/9;
-  background: #080205; border: 1px solid rgba(200,16,46,0.2);
-  position: relative; overflow: hidden;
-  box-shadow: 0 8px 48px rgba(200,16,46,0.1), 0 2px 12px rgba(0,0,0,0.08);
-}
-.feed-box::before, .feed-box::after {
-  content: ''; position: absolute; width: 22px; height: 22px;
-  border-color: var(--red); border-style: solid; z-index: 5; pointer-events: none;
-}
-.feed-box::before { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
-.feed-box::after  { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+/* ── MODAL INPUT ── */
+.modal-input { width:100%; padding:11px 14px; border:1px solid var(--border); background:rgba(255,245,245,0.4); color:var(--text); font-family:var(--mono); font-size:12px; outline:none; transition:all .2s; border-radius:2px; margin-bottom:10px; }
+.modal-input:focus { border-color:var(--red); background:white; box-shadow:0 0 0 3px rgba(200,16,46,0.08); }
+.modal-label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; display:block; }
+.modal-section-title { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(200,16,46,0.1); }
 
-/* IP camera img stream */
-#cam-img {
-  width: 100%; height: 100%; object-fit: cover;
-  display: none; position: absolute; inset: 0;
-}
-
-.no-cam {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-}
-.no-cam-icon {
-  width: 60px; height: 60px; border-radius: 50%;
-  border: 2px solid rgba(200,16,46,0.15);
-  display: flex; align-items: center; justify-content: center; color: rgba(200,16,46,0.25);
-}
-.no-cam h3 { font-family: var(--mono); font-size: 13px; font-weight: 700; color: rgba(200,16,46,0.35); letter-spacing: 2px; text-transform: uppercase; }
-.no-cam p { font-size: 12px; color: rgba(200,16,46,0.2); font-family: var(--mono); letter-spacing: 1px; }
-.no-cam-action {
-  margin-top: 4px; padding: 8px 20px;
-  background: rgba(200,16,46,0.07); border: 1px solid rgba(200,16,46,0.2);
-  color: var(--red); font-family: var(--sans); font-size: 11px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px;
-  transition: all .2s;
-}
-.no-cam-action:hover { background: rgba(200,16,46,0.12); }
-
-.feed-overlay { position: absolute; inset: 0; pointer-events: none; display: none; }
-.feed-overlay.visible { display: block; }
-.feed-tl { position: absolute; top: 14px; left: 14px; display: flex; align-items: center; gap: 8px; }
-.feed-badge { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 3px 8px; letter-spacing: 1px; }
-.feed-badge.live { background: var(--red); color: white; }
-.feed-badge.label { background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.85); }
-.feed-br { position: absolute; bottom: 14px; right: 14px; font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.4); }
-.feed-clock { position: absolute; bottom: 14px; left: 14px; font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.4); }
-.scanlines {
-  position: absolute; inset: 0; pointer-events: none; z-index: 3;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
-}
-
-/* Info bar */
-.info-bar { display: flex; gap: 10px; width: 100%; max-width: 900px; position: relative; z-index: 1; }
-.info-card {
-  flex: 1; padding: 12px 16px;
-  background: rgba(255,255,255,0.75); border: 1px solid rgba(200,16,46,0.1);
-  backdrop-filter: blur(8px); display: flex; align-items: center; gap: 10px;
-}
-.info-icon {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(200,16,46,0.07); display: flex; align-items: center; justify-content: center;
-  color: var(--red); flex-shrink: 0;
-}
-.info-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
-.info-val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.info-val.ok { color: #16a34a; }
-.info-val.warn { color: var(--red); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(200,16,46,0.2); border-radius: 2px; }
+/* ── TABS ── */
+.tab-bar { display:flex; border-bottom:1px solid rgba(200,16,46,0.1); background:#fafafa; flex-shrink:0; }
+.tab-item { padding:12px 20px; font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border-bottom:2px solid transparent; color:var(--muted); transition:all .2s; }
+.tab-item.active { border-bottom-color:var(--red); color:var(--red); }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
+<!-- ════════════════════════════════════════
      TERMS & CONDITIONS
-══════════════════════════════════════ -->
-<div id="terms-screen">
-  <div class="terms-card">
-    <div class="terms-header">
-      <div class="terms-logo">
-        <div class="terms-circle"></div>
+════════════════════════════════════════ -->
+<div id="terms-screen" style="position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fff5f5,#ffe8ec)">
+  <div style="width:620px;max-width:95vw;max-height:90vh;background:white;border:1px solid var(--border);border-top:4px solid var(--red);box-shadow:0 32px 80px rgba(200,16,46,0.1);display:flex;flex-direction:column;animation:rise .5s cubic-bezier(.16,1,.3,1) both">
+    <div style="padding:28px 32px 20px;border-bottom:1px solid rgba(200,16,46,0.1);flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--red3),var(--red));box-shadow:0 4px 16px rgba(200,16,46,0.35);flex-shrink:0"></div>
         <div>
-          <div class="terms-logo-text">Japan<span>Trip</span>2026</div>
-          <span class="terms-logo-sub">Live Monitoring System · v1.0.0</span>
+          <div style="font-size:18px;font-weight:800;letter-spacing:3px;color:var(--text)">Japan<span style="color:var(--red)">Trip</span>2026</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px">Live Monitoring System · v1.0.0</div>
         </div>
       </div>
-      <div class="terms-title">End-User License Agreement & Privacy Policy</div>
-      <div class="terms-subtitle">Please read carefully before accessing this system</div>
+      <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px">End-User License Agreement & Privacy Policy</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px">Please read carefully before accessing this system</div>
     </div>
-
-    <div class="terms-body">
-      <h3>1. System Overview</h3>
-      <p>The JapanTrip2026 Live Monitoring System ("the System") is a network-based video surveillance and monitoring platform developed for educational and authorized security purposes. Access to this System is strictly controlled and logged.</p>
-
-      <div class="highlight">
-        ⚠ This system is protected under Republic Act No. 10173 — Data Privacy Act of 2012 (Philippines) and applicable international data protection regulations.
-      </div>
-
-      <h3>2. Authorized Use Only</h3>
-      <p>Access to this System is restricted to authorized personnel only. By proceeding past this notice, you confirm that:</p>
-      <ul>
-        <li>You are an authorized user with valid credentials issued by the System Administrator.</li>
-        <li>You will not attempt to gain unauthorized access to any feature, camera feed, or administrative function.</li>
-        <li>You will not share your credentials with any third party.</li>
-        <li>You will not use this system for any purpose outside of its intended use.</li>
-      </ul>
-
-      <h3>3. Camera & Video Data</h3>
-      <p>This System may access and display live video feeds from connected IP cameras and network surveillance devices. The following terms apply to all video data:</p>
-      <ul>
-        <li>All camera feeds are processed in real-time and are not permanently stored by default.</li>
-        <li>Snapshots taken through this System are saved locally to the authorized user's device only.</li>
-        <li>Camera feeds must only be accessed in environments where surveillance is legally permitted.</li>
-        <li>Users must not record, redistribute, or publish any video data captured through this System.</li>
-      </ul>
-
-      <h3>4. Security & Access Monitoring</h3>
-      <p>For security purposes, this System actively monitors all login attempts. The following measures are enforced:</p>
-      <ul>
-        <li>All failed login attempts are logged and flagged to System Administrators in real time.</li>
-        <li>Accounts are temporarily suspended after <strong>3 consecutive failed login attempts</strong>.</li>
-        <li>Suspicious access patterns may result in permanent access revocation.</li>
-        <li>IP addresses and session timestamps may be recorded for audit purposes.</li>
-      </ul>
-
-      <h3>5. Data Privacy</h3>
-      <p>The System Administrator is responsible for ensuring compliance with applicable data privacy laws. Users acknowledge that:</p>
-      <ul>
-        <li>Session activity within this system may be logged for security audit purposes.</li>
-        <li>No personal data collected through this system shall be shared with unauthorized parties.</li>
-        <li>Users have the right to request a copy of any data collected about their session by contacting the System Administrator.</li>
-      </ul>
-
-      <h3>6. Prohibited Activities</h3>
-      <p>The following activities are strictly prohibited and may result in legal action:</p>
-      <ul>
-        <li>Attempting to bypass the authentication system or lockout mechanisms.</li>
-        <li>Accessing camera feeds of areas where surveillance is not authorized.</li>
-        <li>Tampering with or disabling any security feature of this System.</li>
-        <li>Using this System to harass, monitor, or surveil individuals without consent.</li>
-      </ul>
-
-      <h3>7. Disclaimer of Liability</h3>
-      <p>The JapanTrip2026 System and its developers are not liable for any misuse of this platform by unauthorized parties. The System is provided as-is for authorized use only. Users assume full responsibility for any actions performed through their authenticated session.</p>
-
-      <div class="terms-effective">
-        Effective Date: May 2026 &nbsp;|&nbsp; Version: 1.0.0 &nbsp;|&nbsp; Jurisdiction: Republic of the Philippines
-      </div>
+    <div style="flex:1;overflow-y:auto;padding:24px 32px;font-size:12px;line-height:1.8;color:#444">
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin:0 0 8px">1. System Overview</div>
+      <p style="margin-bottom:12px">The JapanTrip2026 Live Monitoring System is a network-based video surveillance and monitoring platform developed for educational and authorized security purposes. Access is strictly controlled and logged.</p>
+      <div style="background:rgba(200,16,46,0.05);border-left:3px solid var(--red);padding:10px 14px;margin:12px 0;font-family:var(--mono);font-size:11px;color:var(--text)">⚠ This system is protected under Republic Act No. 10173 — Data Privacy Act of 2012 (Philippines).</div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin:16px 0 8px">2. Authorized Use Only</div>
+      <p style="margin-bottom:8px">Access is restricted to authorized personnel only. By proceeding, you confirm that:</p>
+      <ul style="padding-left:16px;margin-bottom:12px"><li style="margin-bottom:4px">You are an authorized user with valid credentials.</li><li style="margin-bottom:4px">You will not share your credentials with any third party.</li><li style="margin-bottom:4px">You will not attempt unauthorized access to any feature.</li></ul>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin:16px 0 8px">3. Security & Access Monitoring</div>
+      <p style="margin-bottom:8px">This System actively monitors all login attempts:</p>
+      <ul style="padding-left:16px;margin-bottom:12px"><li style="margin-bottom:4px">All failed login attempts are logged and flagged to Administrators.</li><li style="margin-bottom:4px">Accounts are suspended after <strong>3 consecutive failed attempts</strong>.</li><li style="margin-bottom:4px">IP addresses and session timestamps are recorded for audit purposes.</li></ul>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin:16px 0 8px">4. Prohibited Activities</div>
+      <ul style="padding-left:16px;margin-bottom:12px"><li style="margin-bottom:4px">Attempting to bypass authentication or lockout mechanisms.</li><li style="margin-bottom:4px">Accessing camera feeds without authorization.</li><li style="margin-bottom:4px">Sharing or publishing any video data captured through this system.</li></ul>
+      <div style="margin-top:16px;padding:10px 14px;background:#f8f8f8;border:1px solid #eee;font-family:var(--mono);font-size:10px;color:var(--muted)">Effective Date: May 2026 &nbsp;|&nbsp; Version: 1.0.0 &nbsp;|&nbsp; Jurisdiction: Republic of the Philippines</div>
     </div>
-
-    <div class="terms-footer">
-      <div class="terms-check">
-        <input type="checkbox" id="terms-cb" onchange="toggleAgreeBtn()">
-        <label for="terms-cb">I have read, understood, and agree to the <span>Terms & Conditions</span> and <span>Privacy Policy</span> of the JapanTrip2026 Live Monitoring System.</label>
+    <div style="padding:20px 32px;border-top:1px solid rgba(200,16,46,0.1);background:rgba(255,245,245,0.5);flex-shrink:0">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer" onclick="document.getElementById('terms-cb').click()">
+        <input type="checkbox" id="terms-cb" onchange="document.getElementById('terms-btn').classList.toggle('active',this.checked)" style="width:16px;height:16px;accent-color:var(--red);flex-shrink:0;margin-top:2px;cursor:pointer">
+        <label for="terms-cb" style="font-size:12px;color:var(--text);cursor:pointer;line-height:1.5">I have read, understood, and agree to the <span style="color:var(--red);font-weight:700">Terms & Conditions</span> and <span style="color:var(--red);font-weight:700">Privacy Policy</span>.</label>
       </div>
-      <button class="terms-agree-btn" id="terms-agree-btn" onclick="acceptTerms()">AGREE & CONTINUE →</button>
+      <button id="terms-btn" onclick="acceptTerms()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--red2),var(--red));color:white;font-family:var(--sans);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;box-shadow:0 4px 16px rgba(200,16,46,0.3);transition:all .2s;opacity:.4;pointer-events:none" class="">AGREE & CONTINUE →</button>
     </div>
   </div>
 </div>
 
-<!-- REGISTER SCREEN -->
-<div id="register-screen" style="display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffffff 0%,#fff5f5 50%,#ffe8ec 100%)">
+<!-- ════════════════════════════════════════
+     LOCKOUT SCREEN
+════════════════════════════════════════ -->
+<div id="lockout-screen" style="display:none;position:fixed;inset:0;z-index:200;background:linear-gradient(135deg,#fff5f5,#ffe8ec);flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,var(--red3),var(--red));display:flex;align-items:center;justify-content:center;animation:lockPulse 1.5s ease-in-out infinite">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  </div>
+  <div style="font-size:18px;font-weight:800;color:var(--red);letter-spacing:2px;text-transform:uppercase">Access Suspended</div>
+  <div style="font-family:var(--mono);font-size:12px;color:var(--muted);text-align:center;line-height:1.8">Too many failed login attempts.<br>This incident has been reported.</div>
+  <div id="lockout-timer" style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--red)">5:00</div>
+  <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px">PLEASE WAIT BEFORE TRYING AGAIN</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════ -->
+<div id="login-screen" style="display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffffff,#fff5f5,#ffe8ec)">
   <div class="login-card">
-    <div class="login-emblem">
-      <div class="login-circle"></div>
-      <div class="login-brand">Japan<span>Trip</span>2026</div>
-      <div class="login-sub">Create New Account</div>
-    </div>
-    <div class="field"><label>Full Name</label><input type="text" id="r-name" placeholder="Enter your full name"></div>
-    <div class="field"><label>Username</label><input type="text" id="r-user" placeholder="Choose a username"></div>
-    <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="Choose a password"></div>
-    <div class="field"><label>Confirm Password</label><input type="password" id="r-pass2" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doRegister()"></div>
-    <button class="login-btn" id="reg-btn" onclick="doRegister()">CREATE ACCOUNT</button>
-    <div class="login-error" id="reg-error" style="display:none"></div>
-    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--muted)">Already have an account? <span onclick="showLogin()" style="color:var(--red);font-weight:700;cursor:pointer">Sign In</span></div>
-  </div>
-</div>
-
-
-<!-- REGISTER SCREEN -->
-<div id="register-screen" style="display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffffff 0%,#fff5f5 50%,#ffe8ec 100%)">
-  <div class="login-card">
-    <div class="login-emblem">
-      <div class="login-circle"></div>
-      <div class="login-brand">Japan<span>Trip</span>2026</div>
-      <div class="login-sub">Create New Account</div>
-    </div>
-    <div class="field">
-      <label>Full Name</label>
-      <input type="text" id="r-name" autocomplete="off" placeholder="Enter your full name">
-    </div>
-    <div class="field">
-      <label>Username</label>
-      <input type="text" id="r-user" autocomplete="off" placeholder="Choose a username">
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="r-pass" placeholder="Choose a password">
-    </div>
-    <div class="field">
-      <label>Confirm Password</label>
-      <input type="password" id="r-pass2" placeholder="Repeat your password" onkeydown="if(event.key==='Enter')doRegister()">
-    </div>
-    <button class="login-btn" id="register-submit-btn" onclick="doRegister()">CREATE ACCOUNT</button>
-    <div class="login-error" id="register-error" style="display:none"></div>
-    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--muted)">
-      Already have an account?
-      <span onclick="showLogin()" style="color:var(--red);font-weight:700;cursor:pointer;text-decoration:underline">Sign In</span>
-    </div>
-  </div>
-</div>
-
-<!-- LOGIN HISTORY PANEL -->
-<div id="history-panel" style="display:none;position:fixed;inset:0;z-index:150;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px)">
-  <div style="width:680px;max-width:96vw;max-height:85vh;background:white;border:1px solid rgba(200,16,46,0.15);border-top:4px solid var(--red);box-shadow:0 24px 60px rgba(200,16,46,0.15);display:flex;flex-direction:column;animation:rise .3s cubic-bezier(.16,1,.3,1) both">
-    
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(200,16,46,0.1)">
-      <div>
-        <h3 style="font-size:15px;font-weight:800;color:var(--text);letter-spacing:1px">Sussybaka Panel</h3>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:1px">ADMIN ACCESS ONLY</div>
-      </div>
-      <div onclick="toggleHistory()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:18px;border-radius:50%;transition:all .2s">✕</div>
-    </div>
-
-    <!-- Tabs -->
-    <div style="display:flex;border-bottom:1px solid rgba(200,16,46,0.1);background:#fafafa">
-      <div id="tab-users" onclick="switchTab('users')" style="padding:12px 20px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--red);color:var(--red);transition:all .2s">Users</div>
-      <div id="tab-logs" onclick="switchTab('logs')" style="padding:12px 20px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);transition:all .2s">Login History</div>
-    </div>
-
-    <!-- Users Tab -->
-    <div id="panel-users" style="flex:1;overflow-y:auto">
-      <div style="padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(200,16,46,0.06)">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)" id="user-count-label">Loading users...</div>
-        <button onclick="loadUsers()" style="padding:5px 12px;background:none;border:1px solid rgba(200,16,46,0.2);color:var(--red);font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px">↻ Refresh</button>
-      </div>
-      <div id="users-list" style="padding:0"></div>
-    </div>
-
-    <!-- Logs Tab -->
-    <div id="panel-logs" style="flex:1;overflow-y:auto;display:none">
-      <div style="padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(200,16,46,0.06)">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Recent activity logs</div>
-        <button onclick="loadHistory()" style="padding:5px 12px;background:none;border:1px solid rgba(200,16,46,0.2);color:var(--red);font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px">↻ Refresh</button>
-      </div>
-      <div id="history-list"></div>
-    </div>
-
-    <!-- Footer -->
-    <div style="padding:14px 24px;border-top:1px solid rgba(200,16,46,0.08);display:flex;justify-content:flex-end">
-      <button onclick="toggleHistory()" style="padding:8px 16px;background:none;border:1px solid rgba(200,16,46,0.2);color:var(--muted);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     LOCKOUT
-══════════════════════════════════════ -->
-<div id="lockout-screen">
-  <div class="lockout-circle">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-    </svg>
-  </div>
-  <div class="lockout-title">Access Suspended</div>
-  <div class="lockout-msg">Too many failed login attempts detected.<br>This incident has been reported to the System Administrator.</div>
-  <div class="lockout-timer" id="lockout-timer">5:00</div>
-  <div class="lockout-sub">PLEASE WAIT BEFORE TRYING AGAIN</div>
-</div>
-
-<!-- ══════════════════════════════════════
-     LOGIN
-══════════════════════════════════════ -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-emblem">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:32px">
       <div class="login-circle"></div>
       <div class="login-brand">Japan<span>Trip</span>2026</div>
       <div class="login-sub">Secure Monitor Access</div>
     </div>
-    <div class="field">
-      <label>Username</label>
-      <input type="text" id="l-user" autocomplete="off" spellcheck="false" placeholder="Enter username">
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="l-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <button class="login-btn" onclick="doLogin()">SIGN IN →</button>
-    <div class="login-error" id="login-error">Incorrect credentials. Please try again.</div>
-    <div class="attempt-dots">
+    <div class="field"><label>Username</label><input type="text" id="l-user" autocomplete="off" spellcheck="false" placeholder="Enter username"></div>
+    <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">SIGN IN →</button>
+    <div class="login-error" id="login-error"></div>
+    <div style="display:flex;gap:6px;justify-content:center;margin-top:16px">
       <div class="attempt-dot" id="dot-1"></div>
       <div class="attempt-dot" id="dot-2"></div>
       <div class="attempt-dot" id="dot-3"></div>
@@ -727,580 +241,253 @@ body {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ════════════════════════════════════════
+     REGISTER SCREEN
+════════════════════════════════════════ -->
+<div id="register-screen" style="display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffffff,#fff5f5,#ffe8ec)">
+  <div class="login-card">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:32px">
+      <div class="login-circle"></div>
+      <div class="login-brand">Japan<span>Trip</span>2026</div>
+      <div class="login-sub">Create New Account</div>
+    </div>
+    <div class="field"><label>Full Name</label><input type="text" id="r-name" autocomplete="off" placeholder="Enter your full name"></div>
+    <div class="field"><label>Username</label><input type="text" id="r-user" autocomplete="off" placeholder="Choose a username"></div>
+    <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="Choose a password (min 6 chars)"></div>
+    <div class="field"><label>Confirm Password</label><input type="password" id="r-pass2" placeholder="Repeat your password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    <button class="login-btn" id="register-btn" onclick="doRegister()">CREATE ACCOUNT →</button>
+    <div class="login-error" id="register-error"></div>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--muted)">Already have an account? <span onclick="showLogin()" style="color:var(--red);font-weight:700;cursor:pointer;text-decoration:underline">Sign In</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
      APP
-══════════════════════════════════════ -->
-<div id="app">
+════════════════════════════════════════ -->
+<div id="app" style="display:none;flex-direction:column;height:100vh">
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-brand">
+    <div style="display:flex;align-items:center;gap:10px;padding-right:20px;border-right:1px solid rgba(200,16,46,0.15)">
       <div class="topbar-dot"></div>
       <div class="topbar-name">Japan<span>Trip</span>2026</div>
     </div>
-    <div class="topbar-live" style="margin-left:16px">LIVE</div>
-    <button id="history-btn" onclick="toggleHistory()" style="display:none;margin-left:12px;padding:5px 12px;background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);color:var(--red);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s">Sussybaka Panel</button>
+    <div class="topbar-live">LIVE</div>
 
-    <div class="topbar-right">
+    <!-- Sussybaka Panel button — admin only -->
+    <button id="sussy-btn" onclick="openSussy()" style="display:none;margin-left:12px;padding:5px 12px;background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);color:var(--red);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s">Sussybaka Panel</button>
+
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
       <div id="clock-top" style="font-family:var(--mono);font-size:11px;color:var(--muted)"></div>
 
-      <div class="alert-bell" onclick="toggleAlerts()" id="alert-bell" style="display:none">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        </svg>
-        <div class="alert-badge" id="alert-badge">0</div>
+      <!-- Alert Bell — admin only -->
+      <div class="alert-bell" id="alert-bell" style="display:none" onclick="toggleAlerts()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="alert-badge" id="alert-badge"></div>
       </div>
 
-      <button class="settings-btn" onclick="openSettings()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-        Camera Settings
-      </button>
+      <!-- Camera Settings -->
+      <button class="btn btn-ghost" onclick="openSettings()" style="padding:7px 14px">Camera Settings</button>
 
       <div class="user-chip">
         <div class="user-avatar" id="topbar-avatar">?</div>
-        <span id="topbar-username">—</span>
+        <span id="topbar-username" style="font-size:12px;font-weight:700;color:var(--text)">—</span>
       </div>
-      <button class="logout-btn" onclick="doLogout()">Logout</button>
+      <button class="btn btn-ghost" onclick="doLogout()" style="padding:7px 14px">Logout</button>
     </div>
 
-    <!-- Alert Panel -->
+    <!-- Alert dropdown -->
     <div class="alert-panel" id="alert-panel">
-      <div class="alert-panel-header">
-        <h4>⚠ Security Alerts</h4>
-        <span class="alert-clear" onclick="clearAlerts()">Clear all</span>
+      <div style="padding:12px 16px;border-bottom:1px solid rgba(200,16,46,0.1);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text)">Security Alerts</span>
+        <span onclick="clearAlerts()" style="font-size:11px;color:var(--red);cursor:pointer;font-weight:700">Clear all</span>
       </div>
-      <div class="alert-entries" id="alert-entries">
-        <div class="alert-empty">No alerts</div>
-      </div>
+      <div id="alert-entries" style="max-height:260px;overflow-y:auto"><div style="padding:24px;text-align:center;font-size:12px;color:var(--muted);font-family:var(--mono)">No alerts</div></div>
     </div>
   </div>
 
-  <div class="main">
-    <div class="cam-wrapper">
-      <div class="cam-header">
-        <div class="cam-title">
-          <h2>Camera Feed</h2>
+  <!-- MAIN -->
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:16px;overflow:hidden;position:relative">
+
+    <!-- Camera -->
+    <div style="position:relative;z-index:1;width:100%;max-width:900px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <h2 style="font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text)">Camera Feed</h2>
           <div class="cam-pill offline" id="cam-pill">NO SIGNAL</div>
         </div>
       </div>
 
       <div class="feed-box">
-        <img id="cam-img" src="" alt="Camera feed" onerror="if(this.src && this.src !== window.location.href) onCamError()">
+        <img id="cam-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
         <video id="cam-video" autoplay playsinline muted style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>
 
         <div class="no-cam" id="no-cam">
           <div class="no-cam-icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>
-            </svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
           </div>
           <h3 id="no-cam-title">No Camera Connected</h3>
           <p id="no-cam-sub">Use your webcam or configure an IP camera</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
-            <button class="no-cam-action" onclick="startWebcam()">📷 Use Webcam</button>
-            <button class="no-cam-action" onclick="openSettings()">⚙ IP Camera</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+            <button class="no-cam-action" onclick="startWebcam()">Use Webcam</button>
+            <button class="no-cam-action" onclick="openSettings()">IP Camera</button>
           </div>
         </div>
 
         <div class="feed-overlay" id="feed-overlay">
-          <div class="feed-tl">
+          <div style="position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:8px">
             <div class="feed-badge live">● REC</div>
             <div class="feed-badge label" id="feed-label">CAM 1</div>
           </div>
-          <div class="feed-clock" id="feed-clock"></div>
-          <div class="feed-br">JAPANTRIP2026 MONITOR</div>
+          <div id="feed-clock" style="position:absolute;bottom:14px;left:14px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4)"></div>
+          <div style="position:absolute;bottom:14px;right:14px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4)">JAPANTRIP2026</div>
         </div>
         <div class="scanlines"></div>
       </div>
     </div>
 
-    <div class="info-bar">
+    <!-- Info Bar -->
+    <div style="display:flex;gap:10px;width:100%;max-width:900px;position:relative;z-index:1">
+      <!-- Camera status — visible to all -->
       <div class="info-card">
-        <div class="info-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>
-          </svg>
-        </div>
-        <div>
-          <div class="info-label">Camera</div>
-          <div class="info-val" id="ic-status">Disconnected</div>
-        </div>
+        <div class="info-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div><div class="info-label">Camera</div><div class="info-val" id="ic-status">Disconnected</div></div>
       </div>
+      <!-- Session — visible to all -->
       <div class="info-card">
-        <div class="info-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-          </svg>
-        </div>
-        <div>
-          <div class="info-label">Session</div>
-          <div class="info-val" id="ic-session">00:00:00</div>
-        </div>
+        <div class="info-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+        <div><div class="info-label">Session</div><div class="info-val" id="ic-session">00:00:00</div></div>
       </div>
-      <div class="info-card admin-only" id="card-security" style="display:none">
-        <div class="info-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="info-label">Security</div>
-          <div class="info-val ok" id="ic-security">Secure</div>
-        </div>
+      <!-- Security — admin only -->
+      <div class="info-card" id="card-security" style="display:none">
+        <div class="info-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="info-label">Security</div><div class="info-val ok" id="ic-security">Secure</div></div>
       </div>
-
-      <div class="info-card admin-only" id="card-ip" style="display:none">
-        <div class="info-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="info-label">Camera IP</div>
-          <div class="info-val" id="ic-ip">Not set</div>
-        </div>
+      <!-- Failed attempts — admin only -->
+      <div class="info-card" id="card-attempts" style="display:none">
+        <div class="info-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div><div class="info-label">Failed Attempts</div><div class="info-val" id="ic-attempts">0</div></div>
+      </div>
+      <!-- Camera IP — admin only -->
+      <div class="info-card" id="card-ip" style="display:none">
+        <div class="info-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div><div class="info-label">Camera IP</div><div class="info-val" id="ic-ip">Not set</div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- LOGIN HISTORY MODAL -->
-<div class="modal-overlay" id="history-modal">
-  <div class="modal" style="width:600px">
-    <div class="modal-header">
-      <h3>Login History</h3>
-      <div class="modal-close" onclick="closeHistory()">✕</div>
+<!-- ════════════════════════════════════════
+     SUSSYBAKA PANEL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="sussy-panel">
+  <div class="modal-box" style="width:700px;max-width:96vw">
+    <div class="modal-head">
+      <div>
+        <h3>Sussybaka Panel</h3>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:1px">ADMIN ACCESS ONLY</div>
+      </div>
+      <div class="modal-close" onclick="closeSussy()">✕</div>
     </div>
-    <div class="modal-body" style="padding:0">
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead>
-          <tr style="background:rgba(200,16,46,0.05)">
-            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">Username</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">Action</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">IP Address</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(200,16,46,0.1)">Timestamp</th>
-          </tr>
-        </thead>
-        <tbody id="history-tbody">
-          <tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Loading...</td></tr>
-        </tbody>
-      </table>
+    <div class="tab-bar">
+      <div class="tab-item active" id="tab-users" onclick="switchTab('users')">Users</div>
+      <div class="tab-item" id="tab-logs" onclick="switchTab('logs')">Login History</div>
     </div>
-    <div class="modal-footer">
-      <button class="modal-btn ghost" onclick="closeHistory()">Close</button>
-      <button class="modal-btn primary" onclick="loadHistory()">Refresh</button>
+    <!-- Users Tab -->
+    <div id="panel-users" style="flex:1;overflow-y:auto">
+      <div style="padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(200,16,46,0.06)">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)" id="user-count-label">Loading...</div>
+        <button class="btn btn-ghost" onclick="loadUsers()" style="padding:4px 10px;font-size:10px">Refresh</button>
+      </div>
+      <div id="users-list"></div>
     </div>
+    <!-- Logs Tab -->
+    <div id="panel-logs" style="flex:1;overflow-y:auto;display:none">
+      <div style="padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(200,16,46,0.06)">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Recent activity logs</div>
+        <button class="btn btn-ghost" onclick="loadHistory()" style="padding:4px 10px;font-size:10px">Refresh</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeSussy()">Close</button></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SETTINGS MODAL
-══════════════════════════════════════ -->
+<!-- ════════════════════════════════════════
+     CAMERA SETTINGS MODAL
+════════════════════════════════════════ -->
 <div class="modal-overlay" id="settings-modal">
-  <div class="modal" style="width:820px;max-width:96vw">
-    <div class="modal-header">
-      <h3>⚙ Camera Settings</h3>
+  <div class="modal-box" style="width:820px;max-width:96vw">
+    <div class="modal-head">
+      <h3>Camera Settings</h3>
       <div class="modal-close" onclick="closeSettings()">✕</div>
     </div>
-    <div class="modal-body" style="padding:20px 24px">
-      <!-- Landscape two-column layout -->
+    <div style="padding:20px 24px">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-
-        <!-- LEFT COLUMN -->
         <div>
-          <!-- Webcam -->
-          <div class="modal-section" style="margin-bottom:20px">
-            <div class="modal-section-title">Webcam / Laptop Camera</div>
-            <button class="modal-btn primary" style="width:100%" onclick="startWebcam();closeSettings()">📷 CONNECT WEBCAM</button>
-          </div>
+          <div class="modal-section-title">Webcam / Laptop Camera</div>
+          <button class="btn btn-primary" style="width:100%;padding:10px" onclick="startWebcam();closeSettings()">Connect Webcam</button>
 
-          <!-- Stream URL (HTTPS/RTSP) -->
-          <div class="modal-section" style="margin-bottom:20px">
-            <div class="modal-section-title">Stream URL</div>
-            <label class="modal-label">Direct URL (HTTPS / RTSP)</label>
-            <input class="modal-input" type="text" id="cam-stream-url" placeholder="https://... or rtsp://...">
-            <button class="modal-btn primary" style="width:100%;margin-top:4px" onclick="connectStreamURL()">CONNECT STREAM</button>
-            <div id="stream-status-msg" style="display:none;margin-top:8px" class="status-indicator"></div>
+          <div style="margin-top:20px">
+            <div class="modal-section-title">Stream URL (HTTPS)</div>
+            <label class="modal-label">Direct URL</label>
+            <input class="modal-input" type="text" id="cam-stream-url" placeholder="https://...">
+            <button class="btn btn-primary" style="width:100%;padding:10px" onclick="connectStreamURL()">Connect Stream</button>
+            <div id="stream-status" style="display:none" class="status-indicator"></div>
           </div>
         </div>
-
-        <!-- RIGHT COLUMN -->
         <div>
-          <!-- IP Camera -->
-          <div class="modal-section" style="margin-bottom:20px">
-            <div class="modal-section-title">IP Camera Connection</div>
-            <label class="modal-label">Camera IP Address</label>
-            <input class="modal-input" type="text" id="cam-ip" placeholder="e.g. 192.168.1.64">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div>
-                <label class="modal-label">Port</label>
-                <input class="modal-input" type="text" id="cam-port" placeholder="e.g. 8080">
-              </div>
-              <div>
-                <label class="modal-label">Path (optional)</label>
-                <input class="modal-input" type="text" id="cam-path" placeholder="/video">
-              </div>
-            </div>
-            <button class="modal-btn primary" style="width:100%;margin-top:4px" onclick="connectCamera()">CONNECT IP CAMERA</button>
-            <div id="cam-status-msg" style="display:none;margin-top:8px" class="status-indicator"></div>
+          <div class="modal-section-title">IP Camera Connection</div>
+          <label class="modal-label">Camera IP Address</label>
+          <input class="modal-input" type="text" id="cam-ip" placeholder="e.g. 192.168.1.64">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div><label class="modal-label">Port</label><input class="modal-input" type="text" id="cam-port" placeholder="e.g. 8080"></div>
+            <div><label class="modal-label">Path (optional)</label><input class="modal-input" type="text" id="cam-path" placeholder="/video"></div>
           </div>
+          <button class="btn btn-primary" style="width:100%;padding:10px;margin-bottom:4px" onclick="connectCamera()">Connect IP Camera</button>
+          <div id="cam-status-msg" style="display:none" class="status-indicator"></div>
 
-          <!-- Label + Actions -->
-          <div class="modal-section">
+          <div style="margin-top:16px">
             <div class="modal-section-title">Label & Actions</div>
             <label class="modal-label">Display Name</label>
-            <input class="modal-input" type="text" id="cam-label" placeholder="e.g. CCTV 1 - Main Entrance" style="margin-bottom:8px">
+            <input class="modal-input" type="text" id="cam-label" placeholder="e.g. CCTV 1 - Main Entrance">
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="modal-btn ghost" onclick="updateLabel()">Update Label</button>
-              <button class="modal-btn ghost" onclick="disconnectCamera()">Disconnect</button>
-              <button class="modal-btn ghost" onclick="takeSnapshot()">Snapshot</button>
+              <button class="btn btn-ghost" onclick="updateLabel()">Update Label</button>
+              <button class="btn btn-ghost" onclick="disconnectCamera()">Disconnect</button>
+              <button class="btn btn-ghost" onclick="takeSnapshot()">Snapshot</button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="modal-btn ghost" onclick="closeSettings()">Close</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeSettings()">Close</button></div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════
+// ════════════════════════════════════════
 //  STATE
-// ══════════════════════════════════════
-let currentUser = null;
-let sessionToken = null;
-let failedAttempts = 0;
-const MAX_ATTEMPTS = 3;
-const LOCKOUT_SEC = 300;
-let lockoutInterval = null;
-let lockoutRemaining = 0;
-let isLockedOut = false;
-let sessionStart = null;
-let sessionInterval = null;
-let clockInterval = null;
-let camConnected = false;
-let alerts = [];
-let totalFails = parseInt(sessionStorage.getItem('jt_fail') || '0');
+// ════════════════════════════════════════
+let currentUser = null, sessionToken = null;
+let failedAttempts = 0, totalFails = parseInt(sessionStorage.getItem('jt_fail')||'0');
+const MAX_ATTEMPTS = 3, LOCKOUT_SEC = 300;
+let isLockedOut = false, lockoutRemaining = 0, lockoutInterval = null;
+let sessionStart = null, sessionInterval = null, clockInterval = null;
+let camConnected = false, camStream = null;
+let alerts = [], historyOpen = false, activeTab = 'users';
 
-
-// ══════════════════════════════════════
-//  REGISTER
-// ══════════════════════════════════════
-function showRegister() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('register-screen').style.display = 'flex';
-}
-function showLogin() {
-  document.getElementById('register-screen').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-}
-
-async function doRegister() {
-  const name = document.getElementById('r-name').value.trim();
-  const u = document.getElementById('r-user').value.trim();
-  const p = document.getElementById('r-pass').value;
-  const p2 = document.getElementById('r-pass2').value;
-  const err = document.getElementById('reg-error');
-  const btn = document.getElementById('reg-btn');
-
-  err.style.display = 'none';
-  if (!name || !u || !p || !p2) { err.style.display='block'; err.textContent='All fields are required.'; return; }
-  if (p !== p2) { err.style.display='block'; err.textContent='Passwords do not match.'; return; }
-  if (p.length < 6) { err.style.display='block'; err.textContent='Password must be at least 6 characters.'; return; }
-
-  btn.textContent = 'CREATING...'; btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, username: u, password: p })
-    });
-    const data = await res.json();
-    if (data.success) {
-      err.style.display = 'block';
-      err.style.background = 'rgba(34,197,94,0.08)';
-      err.style.borderLeftColor = '#16a34a';
-      err.style.color = '#16a34a';
-      err.textContent = 'Account created! You can now sign in.';
-      setTimeout(() => { showLogin(); err.style.display='none'; }, 2000);
-    } else {
-      err.style.display = 'block'; err.textContent = data.message || 'Registration failed.';
-    }
-  } catch(e) {
-    err.style.display = 'block'; err.textContent = 'Connection error. Try again.';
-  }
-  btn.textContent = 'CREATE ACCOUNT'; btn.disabled = false;
-}
-
-// ══════════════════════════════════════
-//  ROLE-BASED UI
-// ══════════════════════════════════════
-
-
-// ══════════════════════════════════════
-//  LOGIN HISTORY
-// ══════════════════════════════════════
-function toggleHistory() {
-  const modal = document.getElementById('history-modal');
-  modal.classList.toggle('open');
-  if (modal.classList.contains('open')) loadHistory();
-}
-function closeHistory() {
-  document.getElementById('history-modal').classList.remove('open');
-}
-
-async function loadHistory() {
-  const tbody = document.getElementById('history-tbody');
-  tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Loading...</td></tr>';
-  try {
-    const res = await fetch('/api/logs', { headers: { 'x-session-token': sessionToken || '' } });
-    const logs = await res.json();
-    if (!logs.length) {
-      tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">No logs found</td></tr>';
-      return;
-    }
-    tbody.innerHTML = logs.map(log => {
-      const actionColor = log.action === 'LOGIN_SUCCESS' ? '#16a34a' : log.action === 'LOGOUT' ? '#2563eb' : '#c8102e';
-      const ts = new Date(log.timestamp).toLocaleString('en-PH');
-      return `<tr style="border-bottom:1px solid rgba(200,16,46,0.06)">
-        <td style="padding:10px 14px;font-weight:700">${log.username}</td>
-        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:${actionColor};font-weight:700">${log.action}</td>
-        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">${log.ip_address || 'N/A'}</td>
-        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">${ts}</td>
-      </tr>`;
-    }).join('');
-  } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--red);font-family:var(--mono);font-size:11px">Failed to load logs</td></tr>';
-  }
-}
-
-document.getElementById('history-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeHistory();
-});
-
-// ══════════════════════════════════════
+// ════════════════════════════════════════
 //  TERMS
-// ══════════════════════════════════════
-function toggleAgreeBtn() {
-  const cb = document.getElementById('terms-cb');
-  const btn = document.getElementById('terms-agree-btn');
-  btn.classList.toggle('active', cb.checked);
-}
-
+// ════════════════════════════════════════
 function acceptTerms() {
-  sessionStorage.setItem('jt_terms', '1');
+  sessionStorage.setItem('jt_terms','1');
   document.getElementById('terms-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
 }
 
-// ══════════════════════════════════════
-//  LOGIN
-// ══════════════════════════════════════
-async function doLogin() {
-  if (isLockedOut) return;
-  const u = document.getElementById('l-user').value.trim();
-  const p = document.getElementById('l-pass').value;
-  const err = document.getElementById('login-error');
-  const btn = document.querySelector('.login-btn');
-
-  if (!u || !p) { err.style.display = 'block'; err.textContent = 'Please enter username and password.'; return; }
-
-  btn.textContent = 'SIGNING IN...'; btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: u, password: p })
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      currentUser = data;
-      sessionToken = data.token;
-      err.style.display = 'none';
-      failedAttempts = 0;
-      sessionStorage.setItem('jt_fail', '0');
-      totalFails = 0;
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      startSession();
-    } else {
-      failedAttempts++;
-      totalFails++;
-      sessionStorage.setItem('jt_fail', totalFails);
-      if (failedAttempts <= MAX_ATTEMPTS) {
-        document.getElementById(`dot-${failedAttempts}`).classList.add('used');
-      }
-      err.style.display = 'block';
-      err.textContent = 'Incorrect credentials. Please try again.';
-      document.getElementById('l-pass').value = '';
-      const card = document.querySelector('.login-card');
-      card.style.animation = 'none';
-      void card.offsetHeight;
-      card.style.animation = 'shake .4s ease';
-      if (failedAttempts >= MAX_ATTEMPTS) triggerLockout();
-    }
-  } catch(e) {
-    err.style.display = 'block';
-    err.textContent = 'Connection error. Please try again.';
-  }
-
-  btn.textContent = 'SIGN IN →'; btn.disabled = false;
-}
-
-function triggerLockout() {
-  isLockedOut = true;
-  lockoutRemaining = LOCKOUT_SEC;
-  sessionStorage.setItem('jt_lockout', Date.now() + LOCKOUT_SEC * 1000);
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('lockout-screen').classList.add('show');
-  startLockoutCountdown();
-  // Queue alert for when admin logs in
-  addAlert('danger', '🚨 Brute Force Detected', `${MAX_ATTEMPTS} failed login attempts`, now());
-}
-
-function startLockoutCountdown() {
-  updateLockoutDisplay();
-  lockoutInterval = setInterval(() => {
-    lockoutRemaining--;
-    updateLockoutDisplay();
-    if (lockoutRemaining <= 0) {
-      clearInterval(lockoutInterval);
-      isLockedOut = false;
-      failedAttempts = 0;
-      sessionStorage.removeItem('jt_lockout');
-      document.getElementById('lockout-screen').classList.remove('show');
-      document.getElementById('login-screen').style.display = 'flex';
-      document.querySelectorAll('.attempt-dot').forEach(d => d.classList.remove('used'));
-      document.getElementById('login-error').style.display = 'none';
-    }
-  }, 1000);
-}
-
-function updateLockoutDisplay() {
-  const m = Math.floor(lockoutRemaining / 60);
-  const s = lockoutRemaining % 60;
-  document.getElementById('lockout-timer').textContent = `${m}:${String(s).padStart(2,'0')}`;
-}
-
-async function doLogout() {
-  try {
-    if (currentUser) {
-      await fetch('/api/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: currentUser.username })
-      });
-    }
-  } catch(e) {}
-  currentUser = null;
-  sessionToken = null;
-  camConnected = false;
-  disconnectCamera();
-  clearInterval(sessionInterval);
-  clearInterval(clockInterval);
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('l-user').value = '';
-  document.getElementById('l-pass').value = '';
-}
-
-// ══════════════════════════════════════
-//  SESSION
-// ══════════════════════════════════════
-function startSession() {
-  sessionStart = Date.now();
-  updateClock();
-  clockInterval = setInterval(updateClock, 1000);
-  sessionInterval = setInterval(updateSessionTime, 1000);
-  updateSecurityStatus();
-  if (alerts.length > 0) { updateAlertBadge(); renderAlerts(); }
-
-  // Update username display
-  if (currentUser) {
-    const av = document.getElementById('topbar-avatar');
-    const un = document.getElementById('topbar-username');
-    if (av) av.textContent = currentUser.username[0].toUpperCase();
-    if (un) un.textContent = currentUser.username;
-  }
-
-  // Apply role-based UI
-  applyRoleUI(currentUser ? currentUser.role : 'user');
-
-  // Load logs from DB into alerts (admin only)
-  if (currentUser && currentUser.role === 'admin') loadLogs();
-}
-
-function applyRoleUI(role) {
-  const isAdmin = role === 'admin';
-  // Alert bell — admin only
-  const bell = document.getElementById('alert-bell');
-  if (bell) bell.style.display = isAdmin ? 'flex' : 'none';
-  // History button — admin only
-  const histBtn = document.getElementById('history-btn');
-  if (histBtn) histBtn.style.display = isAdmin ? '' : 'none';
-  // Info cards — admin only
-  ['card-security','card-ip'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = isAdmin ? '' : 'none';
-  });
-  // Settings button — visible to all
-  const settingsBtn = document.querySelector('.settings-btn');
-  if (settingsBtn) settingsBtn.style.display = '';
-  // All users can see webcam and IP camera buttons
-  document.querySelectorAll('.no-cam-action').forEach(btn => btn.style.display = '');
-}
-
-async function loadLogs() {
-  try {
-    const res = await fetch('/api/logs', { headers: { 'x-session-token': sessionToken || '' } });
-    const logs = await res.json();
-    logs.forEach(log => {
-      if (log.action === 'LOGIN_FAILED') {
-        addAlert('danger', '🚨 Failed Login', `User: ${log.username} | IP: ${log.ip_address}`, new Date(log.timestamp).toLocaleTimeString('en-PH'));
-      }
-    });
-  } catch(e) {}
-}
-
-function updateClock() {
-  const t = new Date().toLocaleString('en-PH', {
-    month:'short', day:'2-digit', year:'numeric',
-    hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
-  });
-  document.getElementById('clock-top').textContent = t;
-  document.getElementById('feed-clock').textContent = new Date().toLocaleString('en-PH', {
-    month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
-  });
-}
-
-function updateSessionTime() {
-  const e = Math.floor((Date.now() - sessionStart) / 1000);
-  const h = Math.floor(e/3600), m = Math.floor((e%3600)/60), s = e%60;
-  document.getElementById('ic-session').textContent =
-    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function updateSecurityStatus() {
-  const f = parseInt(sessionStorage.getItem('jt_fail') || '0');
-  document.getElementById('ic-attempts').textContent = f;
-  const sec = document.getElementById('ic-security');
-  if (f === 0) { sec.textContent = 'Secure'; sec.className = 'info-val ok'; }
-  else if (f < 3) { sec.textContent = 'Caution'; sec.className = 'info-val warn'; }
-  else { sec.textContent = 'Alert!'; sec.className = 'info-val warn'; }
-}
-
-
-
-// ══════════════════════════════════════
+// ════════════════════════════════════════
 //  REGISTER
-// ══════════════════════════════════════
+// ════════════════════════════════════════
 function showRegister() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('register-screen').style.display = 'flex';
@@ -1309,502 +496,456 @@ function showLogin() {
   document.getElementById('register-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
 }
-
 async function doRegister() {
   const name = document.getElementById('r-name').value.trim();
   const username = document.getElementById('r-user').value.trim();
   const pass = document.getElementById('r-pass').value;
   const pass2 = document.getElementById('r-pass2').value;
   const err = document.getElementById('register-error');
-  const btn = document.getElementById('register-submit-btn');
-
+  const btn = document.getElementById('register-btn');
   err.style.display = 'none';
-  if (!name || !username || !pass) { err.style.display='block'; err.textContent='All fields are required.'; return; }
+  if (!name||!username||!pass) { err.style.display='block'; err.textContent='All fields are required.'; return; }
   if (pass !== pass2) { err.style.display='block'; err.textContent='Passwords do not match.'; return; }
   if (pass.length < 6) { err.style.display='block'; err.textContent='Password must be at least 6 characters.'; return; }
-
-  btn.textContent = 'CREATING...'; btn.disabled = true;
+  btn.textContent='CREATING...'; btn.disabled=true;
   try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, username, password: pass })
-    });
+    const res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,username,password:pass}) });
     const data = await res.json();
     if (data.success) {
-      document.getElementById('register-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
+      showLogin();
+      const loginErr = document.getElementById('login-error');
+      loginErr.style.display='block'; loginErr.style.borderLeftColor='#16a34a'; loginErr.style.color='#16a34a';
+      loginErr.textContent='Account created! You can now sign in.';
       document.getElementById('l-user').value = username;
-      document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').style.borderLeftColor = 'var(--success, #22c55e)';
-      document.getElementById('login-error').style.color = '#16a34a';
-      document.getElementById('login-error').textContent = 'Account created! You can now sign in.';
-    } else {
-      err.style.display = 'block';
-      err.textContent = data.message || 'Registration failed. Try a different username.';
-    }
-  } catch(e) {
-    err.style.display = 'block';
-    err.textContent = 'Connection error. Please try again.';
-  }
-  btn.textContent = 'CREATE ACCOUNT'; btn.disabled = false;
+    } else { err.style.display='block'; err.textContent=data.message||'Registration failed.'; }
+  } catch(e) { err.style.display='block'; err.textContent='Connection error.'; }
+  btn.textContent='CREATE ACCOUNT →'; btn.disabled=false;
 }
 
-// ══════════════════════════════════════
-//  ROLE-BASED UI
-// ══════════════════════════════════════
-
-
-// ══════════════════════════════════════
-//  LOGIN HISTORY PANEL
-// ══════════════════════════════════════
-let historyOpen = false;
-async function toggleHistory() {
-  const panel = document.getElementById('history-panel');
-  historyOpen = !historyOpen;
-  panel.style.display = historyOpen ? 'flex' : 'none';
-  if (historyOpen) {
-    switchTab('users');
-  }
-}
-
-async function loadHistory() {
-  const list = document.getElementById('history-list');
-  list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Loading...</div>';
+// ════════════════════════════════════════
+//  LOGIN / LOGOUT
+// ════════════════════════════════════════
+async function doLogin() {
+  if (isLockedOut) return;
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value;
+  const err = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  err.style.display='none'; err.style.borderLeftColor='var(--red)'; err.style.color='var(--red)';
+  if (!u||!p) { err.style.display='block'; err.textContent='Please enter username and password.'; return; }
+  btn.textContent='SIGNING IN...'; btn.disabled=true;
   try {
-    const res = await fetch('/api/logs', { headers: { 'x-session-token': sessionToken || '' } });
-    const logs = await res.json();
-    if (!logs.length) {
-      list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">No logs yet</div>';
-      return;
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:u,password:p}) });
+    const data = await res.json();
+    if (data.success) {
+      currentUser = data; sessionToken = data.token;
+      err.style.display='none'; failedAttempts=0; totalFails=0;
+      sessionStorage.setItem('jt_fail','0');
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('app').style.display='flex';
+      startSession();
+    } else {
+      failedAttempts++; totalFails++;
+      sessionStorage.setItem('jt_fail', totalFails);
+      if (failedAttempts <= MAX_ATTEMPTS) document.getElementById('dot-'+failedAttempts).classList.add('used');
+      err.style.display='block'; err.textContent='Incorrect credentials. Please try again.';
+      document.getElementById('l-pass').value='';
+      const card = document.querySelector('.login-card');
+      card.style.animation='none'; void card.offsetHeight; card.style.animation='shake .4s ease';
+      if (failedAttempts >= MAX_ATTEMPTS) triggerLockout();
     }
-    list.innerHTML = logs.map(log => {
-      const isSuccess = log.action === 'LOGIN_SUCCESS';
-      const isLogout = log.action === 'LOGOUT';
-      const color = isSuccess ? '#16a34a' : isLogout ? '#2563eb' : '#c8102e';
-      const icon = isSuccess ? '✓' : isLogout ? '→' : '✕';
-      const time = new Date(log.timestamp).toLocaleString('en-PH');
-      return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 24px;border-bottom:1px solid rgba(200,16,46,0.06)">' +
-        '<div style="width:24px;height:24px;border-radius:50%;background:' + color + '20;display:flex;align-items:center;justify-content:center;color:' + color + ';font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px">' + icon + '</div>' +
-        '<div style="flex:1">' +
-          '<div style="font-size:12px;font-weight:700;color:var(--text)">' + log.username + ' — <span style="color:' + color + '">' + log.action + '</span></div>' +
-          '<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px">IP: ' + (log.ip_address || 'unknown') + '</div>' +
-        '</div>' +
-        '<div style="font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap">' + time + '</div>' +
-      '</div>';
-    }).join('');
-  } catch(e) {
-    list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Failed to load logs</div>';
-  }
+  } catch(e) { err.style.display='block'; err.textContent='Connection error. Please try again.'; }
+  btn.textContent='SIGN IN →'; btn.disabled=false;
 }
 
+async function doLogout() {
+  try {
+    if (currentUser && sessionToken) {
+      await fetch('/api/logout', { method:'POST', headers:{'Content-Type':'application/json','x-session-token':sessionToken}, body:JSON.stringify({username:currentUser.username}) });
+    }
+  } catch(e) {}
+  currentUser=null; sessionToken=null;
+  disconnectCamera();
+  clearInterval(sessionInterval); clearInterval(clockInterval);
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('l-user').value=''; document.getElementById('l-pass').value='';
+  alerts=[]; updateAlertBadge(); renderAlerts();
+}
 
+// ════════════════════════════════════════
+//  LOCKOUT
+// ════════════════════════════════════════
+function triggerLockout() {
+  isLockedOut=true; lockoutRemaining=LOCKOUT_SEC;
+  sessionStorage.setItem('jt_lockout', Date.now()+LOCKOUT_SEC*1000);
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('lockout-screen').style.display='flex';
+  startLockoutCountdown();
+}
+function startLockoutCountdown() {
+  updateLockoutDisplay();
+  lockoutInterval = setInterval(() => {
+    lockoutRemaining--;
+    updateLockoutDisplay();
+    if (lockoutRemaining <= 0) {
+      clearInterval(lockoutInterval); isLockedOut=false; failedAttempts=0;
+      sessionStorage.removeItem('jt_lockout');
+      document.getElementById('lockout-screen').style.display='none';
+      document.getElementById('login-screen').style.display='flex';
+      document.querySelectorAll('.attempt-dot').forEach(d=>d.classList.remove('used'));
+      document.getElementById('login-error').style.display='none';
+    }
+  }, 1000);
+}
+function updateLockoutDisplay() {
+  const m=Math.floor(lockoutRemaining/60), s=lockoutRemaining%60;
+  document.getElementById('lockout-timer').textContent=`${m}:${String(s).padStart(2,'0')}`;
+}
 
-// ══════════════════════════════════════
-//  SUSSYBAKA PANEL — TABS
-// ══════════════════════════════════════
-let activeTab = 'users';
+// ════════════════════════════════════════
+//  SESSION
+// ════════════════════════════════════════
+function startSession() {
+  sessionStart = Date.now();
+  // Update topbar username
+  if (currentUser) {
+    document.getElementById('topbar-avatar').textContent = currentUser.username[0].toUpperCase();
+    document.getElementById('topbar-username').textContent = currentUser.username;
+  }
+  updateClock();
+  clockInterval = setInterval(updateClock, 1000);
+  sessionInterval = setInterval(updateSessionTime, 1000);
+  updateSecurityStatus();
+  applyRoleUI(currentUser ? currentUser.role : 'user');
+  if (currentUser && currentUser.role === 'admin') loadLogs();
+}
+
+function updateClock() {
+  const t = new Date().toLocaleString('en-PH',{month:'short',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  document.getElementById('clock-top').textContent = t;
+  document.getElementById('feed-clock').textContent = new Date().toLocaleString('en-PH',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+}
+
+function updateSessionTime() {
+  const e=Math.floor((Date.now()-sessionStart)/1000);
+  const h=Math.floor(e/3600),m=Math.floor((e%3600)/60),s=e%60;
+  document.getElementById('ic-session').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function updateSecurityStatus() {
+  const f = parseInt(sessionStorage.getItem('jt_fail')||'0');
+  const el = document.getElementById('ic-attempts');
+  const sec = document.getElementById('ic-security');
+  if (el) el.textContent = f;
+  if (sec) { sec.textContent = f===0?'Secure':f<3?'Caution':'Alert!'; sec.className='info-val '+(f===0?'ok':'warn'); }
+}
+
+// ════════════════════════════════════════
+//  ROLE UI — one clean function
+// ════════════════════════════════════════
+function applyRoleUI(role) {
+  const isAdmin = role === 'admin';
+  // Sussybaka button
+  const sb = document.getElementById('sussy-btn');
+  if (sb) sb.style.display = isAdmin ? '' : 'none';
+  // Alert bell
+  const bell = document.getElementById('alert-bell');
+  if (bell) bell.style.display = isAdmin ? 'flex' : 'none';
+  // Admin info cards
+  ['card-security','card-attempts','card-ip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isAdmin ? '' : 'none';
+  });
+}
+
+// ════════════════════════════════════════
+//  ALERTS
+// ════════════════════════════════════════
+function addAlert(type,title,desc,time) { alerts.unshift({type,title,desc,time}); updateAlertBadge(); renderAlerts(); }
+function updateAlertBadge() {
+  const b=document.getElementById('alert-badge');
+  if(alerts.length>0){b.textContent=alerts.length>9?'9+':alerts.length;b.classList.add('show');}else b.classList.remove('show');
+}
+function renderAlerts() {
+  const c=document.getElementById('alert-entries');
+  if(!alerts.length){c.innerHTML='<div style="padding:24px;text-align:center;font-size:12px;color:var(--muted);font-family:var(--mono)">No alerts</div>';return;}
+  c.innerHTML=alerts.map(a=>`<div class="alert-entry"><div class="alert-dot ${a.type}"></div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px">${a.title}</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono)">${a.desc}</div></div><div style="font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap">${a.time}</div></div>`).join('');
+}
+function clearAlerts() { alerts=[]; updateAlertBadge(); renderAlerts(); }
+function toggleAlerts() { document.getElementById('alert-panel').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  const p=document.getElementById('alert-panel'),b=document.getElementById('alert-bell');
+  if(p&&b&&!p.contains(e.target)&&!b.contains(e.target)) p.classList.remove('open');
+});
+
+async function loadLogs() {
+  try {
+    const res = await fetch('/api/logs',{headers:{'x-session-token':sessionToken||''}});
+    const logs = await res.json();
+    logs.filter(l=>l.action==='LOGIN_FAILED').slice(0,5).forEach(l=>{
+      addAlert('danger','Failed Login',`User: ${l.username} | IP: ${l.ip_address}`,new Date(l.timestamp).toLocaleTimeString('en-PH'));
+    });
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════
+//  SUSSYBAKA PANEL
+// ════════════════════════════════════════
+function openSussy() { document.getElementById('sussy-panel').classList.add('open'); switchTab('users'); }
+function closeSussy() { document.getElementById('sussy-panel').classList.remove('open'); }
 
 function switchTab(tab) {
   activeTab = tab;
-  // Tab styles
-  const tabs = ['users','logs'];
-  tabs.forEach(t => {
-    const tabEl = document.getElementById('tab-' + t);
-    const panelEl = document.getElementById('panel-' + t);
-    if (t === tab) {
-      tabEl.style.borderBottomColor = 'var(--red)';
-      tabEl.style.color = 'var(--red)';
-      panelEl.style.display = 'flex';
-      panelEl.style.flexDirection = 'column';
-    } else {
-      tabEl.style.borderBottomColor = 'transparent';
-      tabEl.style.color = 'var(--muted)';
-      panelEl.style.display = 'none';
-    }
+  ['users','logs'].forEach(t => {
+    document.getElementById('tab-'+t).className = 'tab-item'+(t===tab?' active':'');
+    document.getElementById('panel-'+t).style.display = t===tab ? 'block' : 'none';
   });
-  if (tab === 'users') loadUsers();
-  if (tab === 'logs') loadHistory();
+  if (tab==='users') loadUsers();
+  if (tab==='logs') loadHistory();
 }
 
-// ══════════════════════════════════════
-//  USER MANAGEMENT
-// ══════════════════════════════════════
 async function loadUsers() {
-  const list = document.getElementById('users-list');
-  const label = document.getElementById('user-count-label');
-  list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Loading users...</div>';
+  const list=document.getElementById('users-list'), label=document.getElementById('user-count-label');
+  list.innerHTML='<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Loading users...</div>';
   try {
-    const res = await fetch('/api/users', { headers: { 'x-session-token': sessionToken || '' } });
-    const data = await res.json();
-    if (!data.success) {
-      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--red);font-family:var(--mono);font-size:12px">Failed to load users.</div>';
-      return;
-    }
-    const users = data.users;
-    label.textContent = users.length + ' registered user' + (users.length !== 1 ? 's' : '');
-    if (!users.length) {
-      list.innerHTML = '<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">No users found.</div>';
-      return;
-    }
-    list.innerHTML = '';
+    const res=await fetch('/api/users',{headers:{'x-session-token':sessionToken||''}});
+    const data=await res.json();
+    if(!data.success){list.innerHTML='<div style="padding:24px;text-align:center;color:var(--red);font-family:var(--mono);font-size:12px">Failed to load users.</div>';return;}
+    const users=data.users;
+    label.textContent=users.length+' registered user'+(users.length!==1?'s':'');
+    if(!users.length){list.innerHTML='<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">No users found.</div>';return;}
+    list.innerHTML='';
     users.forEach(u => {
-      const isMe = currentUser && u.username === currentUser.username;
-      const roleColor = u.role === 'admin' ? '#c8102e' : '#2563eb';
-      const roleBg = u.role === 'admin' ? 'rgba(200,16,46,0.08)' : 'rgba(37,99,235,0.08)';
-      const joined = new Date(u.created_at).toLocaleDateString('en-PH');
-
+      const isMe = currentUser && u.username===currentUser.username;
+      const rc = u.role==='admin'?'#c8102e':'#2563eb';
+      const rb = u.role==='admin'?'rgba(200,16,46,0.08)':'rgba(37,99,235,0.08)';
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid rgba(200,16,46,0.06)';
-
+      row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid rgba(200,16,46,0.06)';
       // Avatar
-      const av = document.createElement('div');
-      av.style.cssText = 'width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;background:' + roleBg + ';color:' + roleColor;
-      av.textContent = u.username[0].toUpperCase();
-
+      const av=document.createElement('div');
+      av.style.cssText='width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;background:'+rb+';color:'+rc;
+      av.textContent=u.username[0].toUpperCase();
       // Info
-      const info = document.createElement('div');
-      info.style.cssText = 'flex:1;min-width:0';
-      info.innerHTML = '<div style="font-size:13px;font-weight:700;color:#1a0a0d">' + u.username + (isMe ? ' <span style="font-size:10px;color:#7a4a52">(you)</span>' : '') + '</div><div style="font-family:monospace;font-size:10px;color:#7a4a52;margin-top:2px">Joined: ' + joined + '</div>';
-
+      const info=document.createElement('div');
+      info.style.cssText='flex:1;min-width:0';
+      info.innerHTML='<div style="font-size:13px;font-weight:700;color:#1a0a0d">'+u.username+(isMe?' <span style="font-size:10px;color:#7a4a52">(you)</span>':'')+'</div><div style="font-family:monospace;font-size:10px;color:#7a4a52;margin-top:2px">Joined: '+new Date(u.created_at).toLocaleDateString('en-PH')+'</div>';
       // Role badge
-      const badge = document.createElement('span');
-      badge.style.cssText = 'font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;background:' + roleBg + ';color:' + roleColor;
-      badge.textContent = u.role;
-
-      row.appendChild(av);
-      row.appendChild(info);
-      row.appendChild(badge);
-
+      const badge=document.createElement('span');
+      badge.style.cssText='font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;background:'+rb+';color:'+rc;
+      badge.textContent=u.role;
+      row.appendChild(av); row.appendChild(info); row.appendChild(badge);
       if (!isMe) {
-        // Role select
-        const sel = document.createElement('select');
-        sel.style.cssText = 'padding:4px 6px;font-size:10px;font-weight:700;border:1px solid rgba(200,16,46,0.2);background:white;color:#1a0a0d;border-radius:2px;cursor:pointer';
-        ['user','admin'].forEach(r => {
-          const opt = document.createElement('option');
-          opt.value = r;
-          opt.textContent = r.toUpperCase();
-          if (u.role === r) opt.selected = true;
-          sel.appendChild(opt);
-        });
-        sel.onchange = () => changeRole(u.username, sel.value);
-
-        // Delete btn
-        const del = document.createElement('button');
-        del.textContent = 'Delete';
-        del.style.cssText = 'padding:4px 10px;background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.2);color:#c8102e;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px';
-        del.onclick = () => deleteUser(u.username);
-
-        const actions = document.createElement('div');
-        actions.style.cssText = 'display:flex;gap:6px';
-        actions.appendChild(sel);
-        actions.appendChild(del);
+        const sel=document.createElement('select');
+        sel.style.cssText='padding:4px 6px;font-size:10px;font-weight:700;border:1px solid rgba(200,16,46,0.2);background:white;color:#1a0a0d;border-radius:2px;cursor:pointer';
+        ['user','admin'].forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r.toUpperCase();if(u.role===r)o.selected=true;sel.appendChild(o);});
+        sel.onchange=()=>changeRole(u.username,sel.value);
+        const del=document.createElement('button');
+        del.textContent='Delete';
+        del.style.cssText='padding:4px 10px;background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.2);color:#c8102e;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px';
+        del.onclick=()=>deleteUser(u.username);
+        const actions=document.createElement('div');
+        actions.style.cssText='display:flex;gap:6px';
+        actions.appendChild(sel); actions.appendChild(del);
         row.appendChild(actions);
       }
-
       list.appendChild(row);
     });
-  } catch(e) {
-    list.innerHTML = '<div style="padding:24px;text-align:center;color:#c8102e;font-family:monospace;font-size:12px">Connection error.</div>';
-  }
+  } catch(e) { list.innerHTML='<div style="padding:24px;text-align:center;color:var(--red);font-family:var(--mono);font-size:12px">Connection error.</div>'; }
 }
 
 async function deleteUser(username) {
-  if (!confirm('Delete user "' + username + '"? This cannot be undone.')) return;
+  if (!confirm('Delete user "'+username+'"? This cannot be undone.')) return;
   try {
-    const res = await fetch('/api/users/' + username, {
-      method: 'DELETE',
-      headers: { 'x-session-token': sessionToken || '' }
-    });
-    const data = await res.json();
-    if (data.success) { loadUsers(); }
-    else alert('Failed to delete: ' + data.message);
+    const res=await fetch('/api/users/'+username,{method:'DELETE',headers:{'x-session-token':sessionToken||''}});
+    const data=await res.json();
+    if(data.success) loadUsers(); else alert('Failed: '+data.message);
   } catch(e) { alert('Connection error.'); }
 }
 
-async function changeRole(username, newRole) {
+async function changeRole(username,newRole) {
   try {
-    const res = await fetch('/api/users/' + username + '/role', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken || '' },
-      body: JSON.stringify({ role: newRole })
-    });
-    const data = await res.json();
-    if (data.success) { loadUsers(); }
-    else alert('Failed to change role: ' + data.message);
+    const res=await fetch('/api/users/'+username+'/role',{method:'PATCH',headers:{'Content-Type':'application/json','x-session-token':sessionToken||''},body:JSON.stringify({role:newRole})});
+    const data=await res.json();
+    if(data.success) loadUsers(); else alert('Failed: '+data.message);
   } catch(e) { alert('Connection error.'); }
 }
 
-// ══════════════════════════════════════
-//  STREAM URL (HTTPS / RTSP via HLS)
-// ══════════════════════════════════════
-async function connectStreamURL() {
-  const url = document.getElementById('cam-stream-url').value.trim();
-  const statusEl = document.getElementById('stream-status-msg');
-
-  if (!url) {
-    showStreamStatus('Please enter a stream URL.', 'error');
-    return;
-  }
-
-  disconnectCamera();
-
-  // HTTPS MJPEG or image stream
-  if (url.startsWith('http')) {
-    const img = document.getElementById('cam-img');
-    img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-    img.style.display = 'block';
-    document.getElementById('no-cam').style.display = 'none';
-    document.getElementById('feed-overlay').classList.add('visible');
-    document.getElementById('cam-pill').textContent = '● LIVE';
-    document.getElementById('cam-pill').className = 'cam-pill live';
-    document.getElementById('ic-status').textContent = 'Stream Active';
-    document.getElementById('ic-status').className = 'info-val ok';
-    document.getElementById('ic-ip').textContent = new URL(url).hostname;
-    document.getElementById('feed-label').textContent = 'IP CAM';
-    showStreamStatus('Connected to HTTPS stream.', 'success');
-    img.onerror = () => {
-      showStreamStatus('Cannot reach stream URL. Check if it is accessible.', 'error');
-      onCamError();
-    };
-    closeSettings();
-    return;
-  }
-
-  // RTSP — browser cannot play RTSP directly, show instructions
-  if (url.startsWith('rtsp')) {
-    showStreamStatus('RTSP streams cannot play directly in browsers. Use a Cloudflare Stream or HLS proxy URL (https://...) instead.', 'error');
-    return;
-  }
-
-  showStreamStatus('Invalid URL. Use https:// or rtsp://', 'error');
+async function loadHistory() {
+  const list=document.getElementById('history-list');
+  list.innerHTML='<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">Loading...</div>';
+  try {
+    const res=await fetch('/api/logs',{headers:{'x-session-token':sessionToken||''}});
+    const logs=await res.json();
+    if(!logs.length){list.innerHTML='<div style="padding:24px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)">No logs yet</div>';return;}
+    list.innerHTML='';
+    logs.forEach(log=>{
+      const isSuccess=log.action==='LOGIN_SUCCESS',isLogout=log.action==='LOGOUT';
+      const color=isSuccess?'#16a34a':isLogout?'#2563eb':'#c8102e';
+      const icon=isSuccess?'✓':isLogout?'→':'✕';
+      const time=new Date(log.timestamp).toLocaleString('en-PH');
+      const entry=document.createElement('div');
+      entry.style.cssText='display:flex;align-items:flex-start;gap:12px;padding:12px 24px;border-bottom:1px solid rgba(200,16,46,0.06)';
+      entry.innerHTML='<div style="width:24px;height:24px;border-radius:50%;background:'+color+'20;display:flex;align-items:center;justify-content:center;color:'+color+';font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px">'+icon+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#1a0a0d">'+log.username+' — <span style="color:'+color+'">'+log.action+'</span></div><div style="font-family:monospace;font-size:10px;color:#7a4a52;margin-top:2px">IP: '+(log.ip_address||'unknown')+'</div></div><div style="font-family:monospace;font-size:10px;color:#7a4a52;white-space:nowrap">'+time+'</div>';
+      list.appendChild(entry);
+    });
+  } catch(e) { list.innerHTML='<div style="padding:24px;text-align:center;color:var(--red);font-family:var(--mono);font-size:12px">Failed to load logs.</div>'; }
 }
 
-function showStreamStatus(msg, type) {
-  const el = document.getElementById('stream-status-msg');
-  el.style.display = 'flex';
-  el.className = 'status-indicator ' + type;
-  const icons = { success:'✓', error:'✕', loading:'◌' };
-  el.textContent = (icons[type] || '') + ' ' + msg;
-}
-
-// ══════════════════════════════════════
-//  WEBCAM
-// ══════════════════════════════════════
-let camStream = null;
+// ════════════════════════════════════════
+//  CAMERA — WEBCAM
+// ════════════════════════════════════════
 async function startWebcam() {
   try {
     disconnectCamera();
-    camStream = await navigator.mediaDevices.getUserMedia({ video: { width:{ideal:1920}, height:{ideal:1080} }, audio: false });
-    const video = document.getElementById('cam-video');
-    video.srcObject = camStream;
-    video.style.display = 'block';
-    document.getElementById('cam-img').style.display = 'none';
-    document.getElementById('no-cam').style.display = 'none';
-    document.getElementById('feed-overlay').classList.add('visible');
-    document.getElementById('cam-pill').textContent = '● LIVE';
-    document.getElementById('cam-pill').className = 'cam-pill live';
-    document.getElementById('ic-status').textContent = 'Webcam Active';
-    document.getElementById('ic-status').className = 'info-val ok';
-    document.getElementById('ic-ip').textContent = 'Webcam';
-    const track = camStream.getVideoTracks()[0];
-    if (track) {
-      const l = track.label || 'Webcam';
-      document.getElementById('feed-label').textContent = l.length > 22 ? l.slice(0,22)+'...' : l;
-    }
+    camStream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1920},height:{ideal:1080}},audio:false});
+    const video=document.getElementById('cam-video');
+    video.srcObject=camStream; video.style.display='block';
+    document.getElementById('cam-img').style.display='none';
+    onCamConnected('Webcam Active', camStream.getVideoTracks()[0]?.label||'Webcam');
   } catch(err) {
-    document.getElementById('no-cam-title').textContent = 'No Camera Detected';
-    document.getElementById('no-cam-sub').textContent = err.name === 'NotAllowedError' ? 'Camera permission denied' : 'No camera device found';
-    addAlert('warn', 'Webcam Error', err.message.slice(0,60), now());
+    document.getElementById('no-cam-title').textContent='No Camera Detected';
+    document.getElementById('no-cam-sub').textContent=err.name==='NotAllowedError'?'Camera permission denied':'No camera device found';
+    addAlert('warn','Webcam Error',err.message.slice(0,60),now());
   }
 }
 
-// ══════════════════════════════════════
-//  CAMERA (IP/MJPEG)
-// ══════════════════════════════════════
+// ════════════════════════════════════════
+//  CAMERA — IP
+// ════════════════════════════════════════
 function connectCamera() {
-  const ip = document.getElementById('cam-ip').value.trim();
-  const port = document.getElementById('cam-port').value.trim() || '80';
-  const path = document.getElementById('cam-path').value.trim() || '';
-  const statusEl = document.getElementById('cam-status-msg');
+  const ip=document.getElementById('cam-ip').value.trim();
+  const port=document.getElementById('cam-port').value.trim()||'80';
+  const path=document.getElementById('cam-path').value.trim()||'';
+  if(!ip){showCamStatus('Please enter a camera IP address.','error');return;}
+  const url=`http://${ip}:${port}${path}`;
+  document.getElementById('ic-ip').textContent=`${ip}:${port}`;
+  document.getElementById('cam-pill').textContent='◌ CONNECTING';
+  document.getElementById('cam-pill').className='cam-pill connecting';
+  showCamStatus('Connecting to '+url+'...','loading');
+  const label=document.getElementById('cam-label').value.trim()||'CCTV 1';
+  const img=document.getElementById('cam-img');
+  disconnectCamera();
+  img.src=url; img.style.display='block';
+  const timeout=setTimeout(()=>{if(!camConnected)onCamFail(ip);},8000);
+  img.onload=()=>{clearTimeout(timeout);onCamConnected('Connected',label);showCamStatus('Connected to '+ip,'success');closeSettings();};
+  img.onerror=()=>{clearTimeout(timeout);onCamFail(ip);};
+}
 
-  if (!ip) {
-    showStatus('Please enter a camera IP address.', 'error');
+// ════════════════════════════════════════
+//  CAMERA — STREAM URL
+// ════════════════════════════════════════
+function connectStreamURL() {
+  const url=document.getElementById('cam-stream-url').value.trim();
+  if(!url){showStreamStatus('Please enter a stream URL.','error');return;}
+  if(url.startsWith('rtsp')){showStreamStatus('RTSP cannot play in browsers. Use an HTTPS/HLS proxy URL instead.','error');return;}
+  if(url.startsWith('http')){
+    disconnectCamera();
+    const img=document.getElementById('cam-img');
+    img.src=url+(url.includes('?')?'&':'?')+'t='+Date.now();
+    img.style.display='block';
+    img.onload=()=>{onCamConnected('Stream Active','IP CAM');showStreamStatus('Connected.','success');closeSettings();};
+    img.onerror=()=>{showStreamStatus('Cannot reach stream URL.','error');onCamFail('stream');};
     return;
   }
-
-  const url = `http://${ip}:${port}${path}`;
-  document.getElementById('ic-ip').textContent = `${ip}:${port}`;
-  showStatus(`Connecting to ${url}...`, 'loading');
-
-  // Update label
-  const label = document.getElementById('cam-label').value.trim() || 'CCTV 1';
-  document.getElementById('feed-label').textContent = label;
-
-  // Try loading as MJPEG stream via img tag
-  const img = document.getElementById('cam-img');
-  img.src = url;
-  img.style.display = 'block';
-
-  // Set connecting state
-  document.getElementById('cam-pill').textContent = '◌ CONNECTING';
-  document.getElementById('cam-pill').className = 'cam-pill connecting';
-
-  // Timeout check — if no load within 8s, show error
-  const timeout = setTimeout(() => {
-    if (!camConnected) onCamError();
-  }, 8000);
-
-  img.onload = () => {
-    clearTimeout(timeout);
-    camConnected = true;
-    document.getElementById('no-cam').style.display = 'none';
-    document.getElementById('feed-overlay').classList.add('visible');
-    document.getElementById('cam-pill').textContent = '● LIVE';
-    document.getElementById('cam-pill').className = 'cam-pill live';
-    document.getElementById('ic-status').textContent = 'Connected';
-    document.getElementById('ic-status').className = 'info-val ok';
-    showStatus(`Connected to ${ip}:${port}`, 'success');
-    closeSettings();
-  };
+  showStreamStatus('Invalid URL. Use https://','error');
 }
 
-function onCamError() {
-  camConnected = false;
-  const ip = document.getElementById('cam-ip').value.trim();
-  document.getElementById('cam-img').style.display = 'none';
-  document.getElementById('no-cam').style.display = 'flex';
-  document.getElementById('no-cam-title').textContent = 'No Camera Detected';
-  document.getElementById('no-cam-sub').textContent = ip ? `Cannot reach ${ip}` : 'Configure your IP camera in Settings';
-  document.getElementById('cam-pill').textContent = 'NO SIGNAL';
-  document.getElementById('cam-pill').className = 'cam-pill offline';
-  document.getElementById('ic-status').textContent = 'Disconnected';
-  document.getElementById('ic-status').className = 'info-val';
-  showStatus('Could not connect. Check IP, port, and that the camera is on the same network.', 'error');
-  addAlert('warn', 'Camera Connection Failed', `Could not reach ${ip || 'unknown IP'}`, now());
+function showCamStatus(msg,type){const el=document.getElementById('cam-status-msg');el.style.display='flex';el.className='status-indicator '+type;el.textContent=({'success':'✓','error':'✕','loading':'◌'}[type]||'')+' '+msg;}
+function showStreamStatus(msg,type){const el=document.getElementById('stream-status');el.style.display='flex';el.className='status-indicator '+type;el.textContent=({'success':'✓','error':'✕','loading':'◌'}[type]||'')+' '+msg;}
+
+function onCamConnected(statusText, label) {
+  camConnected=true;
+  document.getElementById('no-cam').style.display='none';
+  document.getElementById('feed-overlay').classList.add('visible');
+  document.getElementById('cam-pill').textContent='● LIVE';
+  document.getElementById('cam-pill').className='cam-pill live';
+  document.getElementById('ic-status').textContent=statusText;
+  document.getElementById('ic-status').className='info-val ok';
+  document.getElementById('feed-label').textContent=label.length>22?label.slice(0,22)+'…':label;
+}
+
+function onCamFail(ip) {
+  camConnected=false;
+  document.getElementById('cam-img').style.display='none';
+  document.getElementById('no-cam').style.display='flex';
+  document.getElementById('no-cam-title').textContent='No Camera Detected';
+  document.getElementById('no-cam-sub').textContent=ip?`Cannot reach ${ip}`:'Configure your IP camera in Settings';
+  document.getElementById('cam-pill').textContent='NO SIGNAL';
+  document.getElementById('cam-pill').className='cam-pill offline';
+  document.getElementById('ic-status').textContent='Disconnected';
+  document.getElementById('ic-status').className='info-val';
+  addAlert('warn','Camera Failed',`Could not reach ${ip}`,now());
 }
 
 function disconnectCamera() {
-  camConnected = false;
-  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
-  const video = document.getElementById('cam-video');
-  video.srcObject = null; video.style.display = 'none';
-  const img = document.getElementById('cam-img');
-  img.src = ''; img.style.display = 'none';
+  camConnected=false;
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  const video=document.getElementById('cam-video');
+  video.srcObject=null; video.style.display='none';
+  const img=document.getElementById('cam-img');
+  img.src=''; img.style.display='none'; img.onload=null; img.onerror=null;
   document.getElementById('feed-overlay').classList.remove('visible');
-  document.getElementById('no-cam').style.display = 'flex';
-  document.getElementById('no-cam-title').textContent = 'No Camera Connected';
-  document.getElementById('no-cam-sub').textContent = 'Configure your IP camera in Settings';
-  document.getElementById('cam-pill').textContent = 'NO SIGNAL';
-  document.getElementById('cam-pill').className = 'cam-pill offline';
-  document.getElementById('ic-status').textContent = 'Disconnected';
-  document.getElementById('ic-status').className = 'info-val';
-  document.getElementById('ic-ip').textContent = 'Not set';
+  document.getElementById('no-cam').style.display='flex';
+  document.getElementById('no-cam-title').textContent='No Camera Connected';
+  document.getElementById('no-cam-sub').textContent='Use your webcam or configure an IP camera';
+  document.getElementById('cam-pill').textContent='NO SIGNAL';
+  document.getElementById('cam-pill').className='cam-pill offline';
+  document.getElementById('ic-status').textContent='Disconnected';
+  document.getElementById('ic-status').className='info-val';
+  document.getElementById('ic-ip').textContent='Not set';
 }
 
 function updateLabel() {
-  const label = document.getElementById('cam-label').value.trim();
-  if (label) document.getElementById('feed-label').textContent = label;
+  const label=document.getElementById('cam-label').value.trim();
+  if(label) document.getElementById('feed-label').textContent=label;
 }
 
 function takeSnapshot() {
-  const img = document.getElementById('cam-img');
-  if (!img.src || !camConnected) { showStatus('No active camera feed to snapshot.', 'error'); return; }
-  const canvas = document.createElement('canvas');
-  canvas.width = img.naturalWidth || 640;
-  canvas.height = img.naturalHeight || 360;
-  canvas.getContext('2d').drawImage(img, 0, 0);
-  const a = document.createElement('a');
-  a.download = `japantrip2026_snapshot_${Date.now()}.png`;
-  a.href = canvas.toDataURL('image/png');
-  a.click();
+  const video=document.getElementById('cam-video');
+  const img=document.getElementById('cam-img');
+  if(!camConnected){alert('No active camera feed.');return;}
+  const canvas=document.createElement('canvas');
+  if(video.srcObject){canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||360;canvas.getContext('2d').drawImage(video,0,0);}
+  else{canvas.width=img.naturalWidth||640;canvas.height=img.naturalHeight||360;canvas.getContext('2d').drawImage(img,0,0);}
+  const a=document.createElement('a');
+  a.download=`japantrip2026_snapshot_${Date.now()}.png`;
+  a.href=canvas.toDataURL('image/png'); a.click();
 }
 
-function showStatus(msg, type) {
-  const el = document.getElementById('cam-status-msg');
-  el.style.display = 'flex';
-  el.className = `status-indicator ${type}`;
-  const icons = { success:'✓', error:'✕', loading:'◌' };
-  el.textContent = `${icons[type] || ''} ${msg}`;
-}
-
-// ══════════════════════════════════════
+// ════════════════════════════════════════
 //  SETTINGS MODAL
-// ══════════════════════════════════════
-function openSettings() {
-  document.getElementById('settings-modal').classList.add('open');
-  document.getElementById('cam-status-msg').style.display = 'none';
-}
-function closeSettings() {
-  document.getElementById('settings-modal').classList.remove('open');
-}
-document.getElementById('settings-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeSettings();
-});
+// ════════════════════════════════════════
+function openSettings(){document.getElementById('settings-modal').classList.add('open');}
+function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
+document.getElementById('settings-modal').addEventListener('click',function(e){if(e.target===this)closeSettings();});
+document.getElementById('sussy-panel').addEventListener('click',function(e){if(e.target===this)closeSussy();});
 
-// ══════════════════════════════════════
-//  ALERTS
-// ══════════════════════════════════════
-function addAlert(type, title, desc, time) {
-  alerts.unshift({ type, title, desc, time });
-  updateAlertBadge(); renderAlerts();
-}
-function updateAlertBadge() {
-  const b = document.getElementById('alert-badge');
-  if (alerts.length > 0) { b.textContent = alerts.length > 9 ? '9+' : alerts.length; b.classList.add('show'); }
-  else b.classList.remove('show');
-}
-function renderAlerts() {
-  const c = document.getElementById('alert-entries');
-  if (alerts.length === 0) { c.innerHTML = '<div class="alert-empty">No alerts</div>'; return; }
-  c.innerHTML = alerts.map(a => `
-    <div class="alert-entry">
-      <div class="alert-dot ${a.type}"></div>
-      <div class="alert-body">
-        <div class="alert-title">${a.title}</div>
-        <div class="alert-desc">${a.desc}</div>
-      </div>
-      <div class="alert-time">${a.time}</div>
-    </div>`).join('');
-}
-function clearAlerts() { alerts = []; updateAlertBadge(); renderAlerts(); }
-function toggleAlerts() { document.getElementById('alert-panel').classList.toggle('open'); }
-document.addEventListener('click', e => {
-  const p = document.getElementById('alert-panel');
-  const b = document.getElementById('alert-bell');
-  if (!p.contains(e.target) && !b.contains(e.target)) p.classList.remove('open');
-});
-
-// ══════════════════════════════════════
+// ════════════════════════════════════════
 //  HELPERS
-// ══════════════════════════════════════
-function now() { return new Date().toLocaleTimeString('en-PH', {hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+// ════════════════════════════════════════
+function now(){return new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
 
-// Shake animation
-const s = document.createElement('style');
-s.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(8px)}45%{transform:translateX(-5px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)}}`;
-document.head.appendChild(s);
-
-// ══════════════════════════════════════
-//  INIT — check existing lockout/terms
-// ══════════════════════════════════════
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
 window.addEventListener('load', () => {
-  const lockoutEnd = parseInt(sessionStorage.getItem('jt_lockout') || '0');
-  if (Date.now() < lockoutEnd) {
-    isLockedOut = true;
-    lockoutRemaining = Math.ceil((lockoutEnd - Date.now()) / 1000);
-    document.getElementById('terms-screen').style.display = 'none';
-    document.getElementById('lockout-screen').classList.add('show');
-    startLockoutCountdown();
-    return;
+  const lockoutEnd=parseInt(sessionStorage.getItem('jt_lockout')||'0');
+  if(Date.now()<lockoutEnd){
+    isLockedOut=true; lockoutRemaining=Math.ceil((lockoutEnd-Date.now())/1000);
+    document.getElementById('terms-screen').style.display='none';
+    document.getElementById('lockout-screen').style.display='flex';
+    startLockoutCountdown(); return;
   }
-  const termsAccepted = sessionStorage.getItem('jt_terms');
-  if (!termsAccepted) {
-    document.getElementById('terms-screen').style.display = 'flex';
-  } else {
-    document.getElementById('terms-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
+  if(sessionStorage.getItem('jt_terms')){
+    document.getElementById('terms-screen').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
   }
+});
+
+// Terms button activation
+document.getElementById('terms-btn').addEventListener('click', function() {
+  if(this.classList.contains('active')) acceptTerms();
 });
 </script>
 </body>
