@@ -196,8 +196,8 @@ body { background: linear-gradient(160deg, #fff5f5 0%, #ffffff 40%, #fff0f0 100%
       <div style="margin-top:16px;padding:10px 14px;background:#f8f8f8;border:1px solid #eee;font-family:var(--mono);font-size:10px;color:var(--muted)">Effective Date: May 2026 &nbsp;|&nbsp; Version: 1.0.0 &nbsp;|&nbsp; Jurisdiction: Republic of the Philippines</div>
     </div>
     <div style="padding:20px 32px;border-top:1px solid rgba(200,16,46,0.1);background:rgba(255,245,245,0.5);flex-shrink:0">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer" onclick="document.getElementById('terms-cb').click()">
-        <input type="checkbox" id="terms-cb" onchange="document.getElementById('terms-btn').classList.toggle('active',this.checked)" style="width:16px;height:16px;accent-color:var(--red);flex-shrink:0;margin-top:2px;cursor:pointer">
+      <div id="terms-row" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer">
+        <input type="checkbox" id="terms-cb" style="width:16px;height:16px;accent-color:var(--red);flex-shrink:0;margin-top:2px;cursor:pointer">
         <label for="terms-cb" style="font-size:12px;color:var(--text);cursor:pointer;line-height:1.5">I have read, understood, and agree to the <span style="color:var(--red);font-weight:700">Terms & Conditions</span> and <span style="color:var(--red);font-weight:700">Privacy Policy</span>.</label>
       </div>
       <button id="terms-btn" onclick="acceptTerms()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--red2),var(--red));color:white;font-family:var(--sans);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;box-shadow:0 4px 16px rgba(200,16,46,0.3);transition:all .2s;opacity:.4;pointer-events:none" class="">AGREE & CONTINUE →</button>
@@ -944,9 +944,29 @@ window.addEventListener('load', () => {
 });
 
 // Terms button activation
-document.getElementById('terms-btn').addEventListener('click', function() {
-  if(this.classList.contains('active')) acceptTerms();
+const termsCheckbox = document.getElementById('terms-cb');
+const termsButton = document.getElementById('terms-btn');
+
+function updateTermsButton() {
+  const enabled = termsCheckbox.checked;
+  termsButton.disabled = !enabled;
+  termsButton.classList.toggle('active', enabled);
+  termsButton.style.opacity = enabled ? '1' : '.4';
+  termsButton.style.pointerEvents = enabled ? 'auto' : 'none';
+  termsButton.style.cursor = enabled ? 'pointer' : 'not-allowed';
+}
+
+termsCheckbox.addEventListener('change', updateTermsButton);
+document.getElementById('terms-row').addEventListener('click', function(e) {
+  if (e.target !== termsCheckbox && !e.target.closest('label')) {
+    termsCheckbox.checked = !termsCheckbox.checked;
+    updateTermsButton();
+  }
 });
+termsButton.addEventListener('click', function() {
+  if (!termsButton.disabled) acceptTerms();
+});
+updateTermsButton();
 </script>
 </body>
 </html>
